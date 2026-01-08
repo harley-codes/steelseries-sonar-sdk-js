@@ -1,0 +1,19 @@
+{
+	"name": "steelseries-sonar-sdk-js",
+	"description": "An SDK for interacting with the SteelSeries Sonar software.",
+	"license": "MIT",
+	"author": "Harley Torrisi <mail@harleycodes.com>",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/harley-codes/steelseries-sonar-sdk-js"
+	},
+	"module": "./src/index.ts",
+	"type": "module",
+	"scripts": {},
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	}
+}
