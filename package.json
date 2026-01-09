@@ -20,6 +20,7 @@
 	"scripts": {
 		"lint": "biome lint",
 		"lint-fix": "biome check --write",
-		"test-coverage": "bun test --coverage"
+		"test-e2e": "bun test ./tests/e2e/**/*.test.ts",
+		"test-unit": "bun test --coverage ./tests/unit/**/*.test.ts"
 	}
 }

@@ -4,16 +4,17 @@ import {
 	SonarNotRunningException,
 	SonarUnavailableException
 } from '../exceptions'
-
 import { getAppAddress } from './get-app-address'
 
-type SubApps = {
-	sonar?: {
-		isEnabled: boolean
-		isReady: boolean
-		isRunning: boolean
-		metadata: {
-			webServerAddress: string
+type SubAppsResponse = {
+	subApps: {
+		sonar?: {
+			isEnabled: boolean
+			isReady: boolean
+			isRunning: boolean
+			metadata: {
+				webServerAddress: string
+			}
 		}
 	}
 }
@@ -23,7 +24,11 @@ export async function getSonarAddress(appAddress?: string): Promise<string> {
 	let response: Response
 
 	try {
-		response = await fetch(`http://${address}/subApps`)
+		response = await fetch(`${address}/subApps`, {
+			tls: {
+				rejectUnauthorized: false
+			}
+		})
 	} catch (error) {
 		throw new SonarUnavailableException('Unable to reach app server endpoint.', error as Error)
 	}
@@ -32,7 +37,9 @@ export async function getSonarAddress(appAddress?: string): Promise<string> {
 		throw new SonarUnavailableException('Unable to reach app server endpoint.')
 	}
 
-	const { sonar }: SubApps = (await response.json()) as SubApps
+	const result: SubAppsResponse = (await response.json()) as SubAppsResponse
+
+	const sonar = result?.subApps?.sonar
 
 	if (!sonar) {
 		throw new SonarUnavailableException('Sonar sub-application is missing.')

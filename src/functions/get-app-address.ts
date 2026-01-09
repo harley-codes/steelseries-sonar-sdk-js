@@ -15,7 +15,7 @@ export async function getAppAddress(): Promise<string> {
 	const data = parseContents(fileContents)
 
 	if (data.ggEncryptedAddress) {
-		return data.ggEncryptedAddress
+		return `https://${data.ggEncryptedAddress}`
 	}
 
 	throw new NotFoundException(`ggEncryptedAddress not found in ${appDataPath}`)

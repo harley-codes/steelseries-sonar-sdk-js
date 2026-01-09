@@ -4,8 +4,8 @@ import {
 	SonarNotReadyException,
 	SonarNotRunningException,
 	SonarUnavailableException
-} from '../src/exceptions'
-import { getSonarAddress } from '../src/functions/get-sonar-address'
+} from '../../src/exceptions'
+import { getSonarAddress } from '../../src/functions/get-sonar-address'
 
 let originalFetch: typeof fetch
 
@@ -23,11 +23,13 @@ describe('getSonarAddress', () => {
 			({
 				ok: true,
 				json: async () => ({
-					sonar: {
-						isEnabled: false,
-						isReady: true,
-						isRunning: true,
-						metadata: { webServerAddress: '127.0.0.1:1234' }
+					subApps: {
+						sonar: {
+							isEnabled: false,
+							isReady: true,
+							isRunning: true,
+							metadata: { webServerAddress: '127.0.0.1:1234' }
+						}
 					}
 				})
 			}) as Response) as unknown as typeof fetch
@@ -40,11 +42,13 @@ describe('getSonarAddress', () => {
 			({
 				ok: true,
 				json: async () => ({
-					sonar: {
-						isEnabled: true,
-						isReady: false,
-						isRunning: true,
-						metadata: { webServerAddress: '127.0.0.1:1234' }
+					subApps: {
+						sonar: {
+							isEnabled: true,
+							isReady: false,
+							isRunning: true,
+							metadata: { webServerAddress: '127.0.0.1:1234' }
+						}
 					}
 				})
 			}) as Response) as unknown as typeof fetch
@@ -57,11 +61,13 @@ describe('getSonarAddress', () => {
 			({
 				ok: true,
 				json: async () => ({
-					sonar: {
-						isEnabled: true,
-						isReady: true,
-						isRunning: false,
-						metadata: { webServerAddress: '127.0.0.1:1234' }
+					subApps: {
+						sonar: {
+							isEnabled: true,
+							isReady: true,
+							isRunning: false,
+							metadata: { webServerAddress: '127.0.0.1:1234' }
+						}
 					}
 				})
 			}) as Response) as unknown as typeof fetch
@@ -89,10 +95,12 @@ describe('getSonarAddress', () => {
 			({
 				ok: true,
 				json: async () => ({
-					sonar: {
-						isEnabled: true,
-						isReady: true,
-						isRunning: false
+					subApps: {
+						sonar: {
+							isEnabled: true,
+							isReady: true,
+							isRunning: false
+						}
 					}
 				})
 			}) as Response) as unknown as typeof fetch
@@ -100,20 +108,24 @@ describe('getSonarAddress', () => {
 		expect(getSonarAddress()).rejects.toThrow(SonarUnavailableException)
 	})
 
-	it('returns sonar address when response is valid', async () => {
+	it('return Sonar webServerAddress when response is valid', async () => {
+		const expectedWebServerAddress = 'https://127.0.0.1:1234'
+
 		globalThis.fetch = (async () =>
 			({
 				ok: true,
 				json: async () => ({
-					sonar: {
-						isEnabled: true,
-						isReady: true,
-						isRunning: true,
-						metadata: { webServerAddress: '127.0.0.1:1234' }
+					subApps: {
+						sonar: {
+							isEnabled: true,
+							isReady: true,
+							isRunning: true,
+							metadata: { webServerAddress: expectedWebServerAddress }
+						}
 					}
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarAddress()).resolves.toBe('127.0.0.1:1234')
+		expect(getSonarAddress()).resolves.toBe(expectedWebServerAddress)
 	})
 })
