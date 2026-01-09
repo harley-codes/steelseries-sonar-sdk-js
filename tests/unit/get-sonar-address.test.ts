@@ -9,8 +9,11 @@ import { getSonarAddress } from '../../src/functions/get-sonar-address'
 
 let originalFetch: typeof fetch
 
-mock.module('node:os', () => ({
-	platform: () => 'win32'
+// We mock getAppAddress to avoid testing its implementation here
+mock.module('../../src/functions/get-app-address', () => ({
+	getAppAddress: (): Promise<string> => {
+		return Promise.resolve('127.0.0.1:9999')
+	}
 }))
 
 describe('getSonarAddress', () => {
