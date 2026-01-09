@@ -11,16 +11,16 @@ let originalFetch: typeof fetch
 
 describe('getSonarAddress', () => {
 	beforeEach(() => {
-		mock.module('../../src/functions/get-app-address', () => ({
-			getAppAddress: (): Promise<string> => {
-				return Promise.resolve('127.0.0.1:9999')
-			}
-		}))
+		// mock.module('../../src/functions/get-app-address', () => ({
+		// 	getAppAddress: (): Promise<string> => {
+		// 		return Promise.resolve('127.0.0.1:9999')
+		// 	}
+		// }))
 		originalFetch = globalThis.fetch
 	})
 
 	afterEach(() => {
-		mock.restore()
+		// mock.restore()
 		globalThis.fetch = originalFetch
 	})
 
