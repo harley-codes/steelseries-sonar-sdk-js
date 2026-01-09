@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
+import { afterEach, beforeEach, describe, expect, it, mock } from 'bun:test'
 import {
 	SonarNotEnabledException,
 	SonarNotReadyException,
@@ -8,6 +8,10 @@ import {
 import { getSonarAddress } from '../../src/functions/get-sonar-address'
 
 let originalFetch: typeof fetch
+
+mock.module('node:os', () => ({
+	platform: () => 'win32'
+}))
 
 describe('getSonarAddress', () => {
 	beforeEach(() => {
