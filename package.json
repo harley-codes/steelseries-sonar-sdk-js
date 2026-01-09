@@ -1,19 +1,24 @@
 {
 	"name": "steelseries-sonar-sdk-js",
 	"description": "An SDK for interacting with the SteelSeries Sonar software.",
-	"license": "MIT",
 	"author": "Harley Torrisi <mail@harleycodes.com>",
+	"license": "MIT",
+	"type": "module",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/harley-codes/steelseries-sonar-sdk-js"
 	},
 	"module": "./src/index.ts",
-	"type": "module",
-	"scripts": {},
 	"devDependencies": {
-		"@types/bun": "latest"
+		"@biomejs/biome": "2.3.11",
+		"@types/bun": "latest",
+		"globals": "^17.0.0"
 	},
 	"peerDependencies": {
 		"typescript": "^5"
+	},
+	"scripts": {
+		"lint": "biome lint",
+		"lint-fix": "biome check --write"
 	}
 }
