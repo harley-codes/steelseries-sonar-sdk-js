@@ -22,6 +22,7 @@ describe('getSonarAddress', () => {
 	})
 
 	afterEach(() => {
+		mock.restore()
 		globalThis.fetch = originalFetch
 	})
 
