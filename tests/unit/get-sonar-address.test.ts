@@ -5,22 +5,24 @@ import {
 	SonarNotRunningException,
 	SonarUnavailableException
 } from '../../src/exceptions'
+import * as getAppAddress from '../../src/functions/get-app-address'
 import { getSonarAddress } from '../../src/functions/get-sonar-address'
 
 let originalFetch: typeof fetch
+const originalGetAppAddress = getAppAddress
 
 describe('getSonarAddress', () => {
 	beforeEach(() => {
-		// mock.module('../../src/functions/get-app-address', () => ({
-		// 	getAppAddress: (): Promise<string> => {
-		// 		return Promise.resolve('127.0.0.1:9999')
-		// 	}
-		// }))
+		mock.module('../../src/functions/get-app-address', () => ({
+			getAppAddress: (): Promise<string> => {
+				return Promise.resolve('127.0.0.1:9999')
+			}
+		}))
 		originalFetch = globalThis.fetch
 	})
 
 	afterEach(() => {
-		// mock.restore()
+		mock.module('../../src/functions/get-app-address', () => originalGetAppAddress)
 		globalThis.fetch = originalFetch
 	})
 
