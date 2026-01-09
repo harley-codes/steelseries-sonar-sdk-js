@@ -10,14 +10,12 @@ import { getSonarAddress } from '../../src/functions/get-sonar-address'
 let originalFetch: typeof fetch
 
 describe('getSonarAddress', () => {
-	// We mock getAppAddress to avoid testing its implementation here
-	mock.module('../../src/functions/get-app-address', () => ({
-		getAppAddress: (): Promise<string> => {
-			return Promise.resolve('127.0.0.1:9999')
-		}
-	}))
-
 	beforeEach(() => {
+		mock.module('../../src/functions/get-app-address', () => ({
+			getAppAddress: (): Promise<string> => {
+				return Promise.resolve('127.0.0.1:9999')
+			}
+		}))
 		originalFetch = globalThis.fetch
 	})
 
