@@ -14,7 +14,7 @@ const spy = spyOn(getAppAddressModule, 'getAppAddress')
 
 describe('getSonarAddress', () => {
 	beforeEach(() => {
-		spy.mockReturnValue(Promise.resolve('127.0.0.1:9999'))
+		spy.mockImplementation(() => Promise.resolve('127.0.0.1:9999'))
 		originalFetch = globalThis.fetch
 	})
 
@@ -24,6 +24,7 @@ describe('getSonarAddress', () => {
 	})
 
 	it('throws SonarNotEnabledException if sonar is not enabled', async () => {
+		spy.mockImplementation(() => Promise.resolve('127.0.0.1:9999'))
 		globalThis.fetch = (async () =>
 			({
 				ok: true,
