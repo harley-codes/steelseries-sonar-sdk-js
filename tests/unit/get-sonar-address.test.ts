@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from 'bun:test'
+import { afterEach, beforeEach, describe, expect, it, mock } from 'bun:test'
 import {
 	SonarNotEnabledException,
 	SonarNotReadyException,
@@ -10,21 +10,22 @@ import { getSonarAddress } from '../../src/functions/get-sonar-address'
 
 let originalFetch: typeof fetch
 
-const spy = spyOn(getAppAddressModule, 'getAppAddress')
+const originalGetAppAddressModule = { ...getAppAddressModule }
 
 describe('getSonarAddress', () => {
 	beforeEach(() => {
-		spy.mockImplementation(() => Promise.resolve('127.0.0.1:9999'))
+		mock.module('../../src/functions/get-app-address', () => ({
+			getAppAddress: () => Promise.resolve('127.0.0.1:9999')
+		}))
 		originalFetch = globalThis.fetch
 	})
 
 	afterEach(() => {
-		spy.mockRestore()
+		mock.module('../../src/functions/get-app-address', () => ({ ...originalGetAppAddressModule }))
 		globalThis.fetch = originalFetch
 	})
 
 	it('throws SonarNotEnabledException if sonar is not enabled', async () => {
-		spy.mockImplementation(() => Promise.resolve('127.0.0.1:9999'))
 		globalThis.fetch = (async () =>
 			({
 				ok: true,
