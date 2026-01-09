@@ -9,7 +9,7 @@ import * as getAppAddress from '../../src/functions/get-app-address'
 import { getSonarAddress } from '../../src/functions/get-sonar-address'
 
 let originalFetch: typeof fetch
-const originalGetAppAddress = getAppAddress
+const originalGetAppAddress = { ...getAppAddress }
 
 describe('getSonarAddress', () => {
 	beforeEach(() => {
@@ -22,7 +22,7 @@ describe('getSonarAddress', () => {
 	})
 
 	afterEach(() => {
-		mock.module('../../src/functions/get-app-address', () => originalGetAppAddress)
+		mock.module('../../src/functions/get-app-address', () => ({ ...originalGetAppAddress }))
 		globalThis.fetch = originalFetch
 	})
 
