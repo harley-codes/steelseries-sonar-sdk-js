@@ -9,6 +9,21 @@ type CoreProps = {
 	ggEncryptedAddress: string
 }
 
+/**
+ * Retrieves the SteelSeries GG application's encrypted address from the coreProps.json file.
+ *
+ * @returns A promise that resolves to the GG application's secure address string (e.g., "https://..."),
+ *          as found in the ggEncryptedAddress property of coreProps.json.
+ *
+ * @throws {NotFoundException} If the ggEncryptedAddress is missing or the file cannot be read.
+ * @throws {UnsupportedException} If the operating system is not Windows.
+ * @throws {InvalidException} If the coreProps.json contents cannot be parsed.
+ *
+ * @remarks
+ * - Only supports Windows OS; throws on other platforms.
+ * - Locates coreProps.json in the ProgramData directory under SteelSeries folders.
+ * - Reads and parses the file, returning the encrypted address as a secure URL.
+ */
 export async function getAppAddress(): Promise<string> {
 	const appDataPath = getPath()
 	const fileContents = await getContents(appDataPath)

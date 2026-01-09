@@ -1,27 +1,20 @@
-import { afterEach, beforeEach, describe, expect, it, mock } from 'bun:test'
+import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 import {
 	SonarNotEnabledException,
 	SonarNotReadyException,
 	SonarNotRunningException,
 	SonarUnavailableException
 } from '../../src/exceptions'
-import * as getAppAddressModule from '../../src/functions/get-app-address'
 import { getSonarAddress } from '../../src/functions/get-sonar-address'
 
 let originalFetch: typeof fetch
 
-const originalGetAppAddressModule = { ...getAppAddressModule }
-
 describe('getSonarAddress', () => {
 	beforeEach(() => {
-		mock.module('../../src/functions/get-app-address', () => ({
-			getAppAddress: () => Promise.resolve('127.0.0.1:9999')
-		}))
 		originalFetch = globalThis.fetch
 	})
 
 	afterEach(() => {
-		mock.module('../../src/functions/get-app-address', () => ({ ...originalGetAppAddressModule }))
 		globalThis.fetch = originalFetch
 	})
 
@@ -41,7 +34,7 @@ describe('getSonarAddress', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarAddress()).rejects.toThrow(SonarNotEnabledException)
+		expect(getSonarAddress('')).rejects.toThrow(SonarNotEnabledException)
 	})
 
 	it('throws SonarNotReadyException if sonar is not ready', async () => {
@@ -60,7 +53,7 @@ describe('getSonarAddress', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarAddress()).rejects.toThrow(SonarNotReadyException)
+		expect(getSonarAddress('')).rejects.toThrow(SonarNotReadyException)
 	})
 
 	it('throws SonarNotRunningException if sonar is not running', async () => {
@@ -79,14 +72,14 @@ describe('getSonarAddress', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarAddress()).rejects.toThrow(SonarNotRunningException)
+		expect(getSonarAddress('')).rejects.toThrow(SonarNotRunningException)
 	})
 
 	it('throws SonarUnavailableException if sonar server is not found', async () => {
 		globalThis.fetch = (async () => {
 			throw new Error('Failed to fetch')
 		}) as unknown as typeof fetch
-		expect(getSonarAddress()).rejects.toThrow(SonarUnavailableException)
+		expect(getSonarAddress('')).rejects.toThrow(SonarUnavailableException)
 	})
 
 	it('throws SonarUnavailableException if sonar server returns bad status code', async () => {
@@ -94,7 +87,7 @@ describe('getSonarAddress', () => {
 			({
 				ok: false
 			}) as Response) as unknown as typeof fetch
-		expect(getSonarAddress()).rejects.toThrow(SonarUnavailableException)
+		expect(getSonarAddress('')).rejects.toThrow(SonarUnavailableException)
 	})
 
 	it('throws SonarUnavailableException if sonar webServerAddress is not provided', async () => {
@@ -112,7 +105,7 @@ describe('getSonarAddress', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarAddress()).rejects.toThrow(SonarUnavailableException)
+		expect(getSonarAddress('')).rejects.toThrow(SonarUnavailableException)
 	})
 
 	it('return Sonar webServerAddress when response is valid', async () => {
@@ -133,6 +126,6 @@ describe('getSonarAddress', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarAddress()).resolves.toBe(expectedWebServerAddress)
+		expect(getSonarAddress('')).resolves.toBe(expectedWebServerAddress)
 	})
 })

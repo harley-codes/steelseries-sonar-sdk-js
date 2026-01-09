@@ -4,7 +4,6 @@ import {
 	SonarNotRunningException,
 	SonarUnavailableException
 } from '../exceptions'
-import { getAppAddress } from './get-app-address'
 
 type SubAppsResponse = {
 	subApps: {
@@ -19,12 +18,27 @@ type SubAppsResponse = {
 	}
 }
 
-export async function getSonarAddress(appAddress?: string): Promise<string> {
-	const address = appAddress ?? (await getAppAddress())
+/**
+ * Retrieves the Sonar web server address from an application server's /subApps endpoint.
+ *
+ * @param appAddress - The base URL of the application server (e.g. "https://localhost:1234").
+ * @returns A promise that resolves to the Sonar web server address string.
+ *
+ * @throws {SonarUnavailableException} If the app server cannot be reached, or data cannot be resolved.
+ * @throws {SonarNotEnabledException} If the Sonar sub-application exists but is not enabled.
+ * @throws {SonarNotRunningException} If the Sonar sub-application exists but is not running.
+ * @throws {SonarNotReadyException} If the Sonar sub-application exists but is not ready.
+ *
+ * @remarks
+ * - Performs a GET request to `${appAddress}/subApps`.
+ * - The response body is expected to conform to the SubAppsResponse shape and contain `subApps.sonar`.
+ * - Uses a fetch TLS option that disables certificate verification (rejectUnauthorized: false).
+ */
+export async function getSonarAddress(appAddress: string): Promise<string> {
 	let response: Response
 
 	try {
-		response = await fetch(`${address}/subApps`, {
+		response = await fetch(`${appAddress}/subApps`, {
 			tls: {
 				rejectUnauthorized: false
 			}

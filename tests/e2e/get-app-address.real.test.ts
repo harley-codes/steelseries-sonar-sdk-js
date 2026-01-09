@@ -14,6 +14,6 @@ describe('getAppAddress', () => {
 	it('returns ggEncryptedAddress', async () => {
 		const result = await getAppAddress()
 		expect(result).toBeString()
-		logs.push(`> address: ${result}`)
+		logs.push(`> app address: ${result}`)
 	})
 })
