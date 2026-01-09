@@ -1,0 +1,36 @@
+import { SonarUnavailableException } from '../exceptions'
+import { getSonarAddress } from './get-sonar-address'
+
+const cache = {
+	appAddress: null as string | null,
+	sonarAddress: null as string | null,
+	timestamp: 0
+}
+
+export async function getSonarAddressCached(
+	appAddress: string,
+	seconds: number = 60
+): Promise<string> {
+	const now = Date.now()
+
+	if (
+		cache.appAddress === appAddress &&
+		cache.sonarAddress &&
+		now - cache.timestamp < seconds * 1000
+	) {
+		return cache.sonarAddress
+	}
+
+	try {
+		const sonarAddress = await getSonarAddress(appAddress)
+		cache.appAddress = appAddress
+		cache.sonarAddress = sonarAddress
+		cache.timestamp = now
+		return sonarAddress
+	} catch (error) {
+		cache.appAddress = null
+		cache.sonarAddress = null
+		cache.timestamp = 0
+		throw new SonarUnavailableException('Sonar web server address is missing.', error as Error)
+	}
+}
