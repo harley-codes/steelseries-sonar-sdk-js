@@ -3,4 +3,6 @@
 An SDK for interacting with the SteelSeries Sonar software.
 
 ### Known Limitation
-Changes made with this SDK are not immediately visible in the SteelSeries GG software. Both the SDK and GG software communicate directly with the Sonar Service API, but the GG UI does not do any polling to auto-refresh when changes are made externally. To see the latest state in GG, you must close and reopen the GG window.
+Changes made with this SDK are not immediately visible in the SteelSeries GG software. Both the SDK and GG software communicate directly with the Sonar Service API, but the GG UI does not do any polling to auto-refresh when changes are made externally. To see the latest state in GG, you must close and reopen the GG window. 
+
+_I don't think this will matter to anyobody - but feel obliged to mention it._
