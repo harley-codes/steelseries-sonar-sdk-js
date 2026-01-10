@@ -1,13 +1,13 @@
 import { describe, expect, it, mock } from 'bun:test'
 import { InvalidException, NotFoundException, UnsupportedException } from '../../src/exceptions'
-import { getAppAddress } from '../../src/functions/get-app-address'
+import { getAppEndpoint } from '../../src/functions/get-app-endpoint'
 
-describe('getAppAddress', () => {
+describe('getAppEndpoint', () => {
 	it('throws UnsupportedException on unsupported OS', async () => {
 		mock.module('node:os', () => ({
 			platform: () => 'linux'
 		}))
-		expect(getAppAddress()).rejects.toThrow(UnsupportedException)
+		expect(getAppEndpoint()).rejects.toThrow(UnsupportedException)
 	})
 
 	it('throws NotFoundException when appData file does not exist', async () => {
@@ -21,7 +21,7 @@ describe('getAppAddress', () => {
 				}
 			}
 		}))
-		expect(getAppAddress()).rejects.toThrow(NotFoundException)
+		expect(getAppEndpoint()).rejects.toThrow(NotFoundException)
 	})
 
 	it('throws InvalidException when appData file is invalid JSON', async () => {
@@ -33,7 +33,7 @@ describe('getAppAddress', () => {
 				readFile: async () => 'invalid json'
 			}
 		}))
-		expect(getAppAddress()).rejects.toThrow(InvalidException)
+		expect(getAppEndpoint()).rejects.toThrow(InvalidException)
 	})
 
 	it('throws NotFoundException when ggEncryptedAddress is missing', async () => {
@@ -45,7 +45,7 @@ describe('getAppAddress', () => {
 				readFile: async () => JSON.stringify({})
 			}
 		}))
-		expect(getAppAddress()).rejects.toThrow(NotFoundException)
+		expect(getAppEndpoint()).rejects.toThrow(NotFoundException)
 	})
 
 	it('returns ggEncryptedAddress when file is valid', async () => {
@@ -59,6 +59,6 @@ describe('getAppAddress', () => {
 				readFile: async () => JSON.stringify({ ggEncryptedAddress: mockAddress })
 			}
 		}))
-		expect(getAppAddress()).resolves.toBe(expectedUrl)
+		expect(getAppEndpoint()).resolves.toBe(expectedUrl)
 	})
 })

@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, setSystemTime } from 'bun:test'
-import { getSonarAddressCached } from '../../src/functions/get-sonar-address-cached'
+import { getSonarEndpointCached } from '../../src/functions/get-sonar-endpoint-cached'
 
 let originalFetch: typeof fetch
 
-describe('getSonarAddressCached', () => {
+describe('getSonarEndpointCached', () => {
 	beforeEach(() => {
 		originalFetch = globalThis.fetch
 	})
@@ -31,7 +31,7 @@ describe('getSonarAddressCached', () => {
 			}) as Response) as unknown as typeof fetch
 
 		setSystemTime(1000)
-		expect(getSonarAddressCached('', 1)).resolves.toBe(expectedWebServerAddress)
+		expect(getSonarEndpointCached('', 1)).resolves.toBe(expectedWebServerAddress)
 
 		globalThis.fetch = (async () =>
 			({
@@ -48,7 +48,7 @@ describe('getSonarAddressCached', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 		setSystemTime(500)
-		expect(getSonarAddressCached('', 1)).resolves.toBe(expectedWebServerAddress)
+		expect(getSonarEndpointCached('', 1)).resolves.toBe(expectedWebServerAddress)
 	})
 
 	it('return new value when cache time expired', async () => {
@@ -71,7 +71,7 @@ describe('getSonarAddressCached', () => {
 			}) as Response) as unknown as typeof fetch
 
 		setSystemTime(1000)
-		expect(getSonarAddressCached('', 1)).resolves.toBe(expectedFirstAddress)
+		expect(getSonarEndpointCached('', 1)).resolves.toBe(expectedFirstAddress)
 
 		globalThis.fetch = (async () =>
 			({
@@ -88,6 +88,6 @@ describe('getSonarAddressCached', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 		setSystemTime(2500)
-		expect(getSonarAddressCached('', 1)).resolves.toBe(expectedSecondAddress)
+		expect(getSonarEndpointCached('', 1)).resolves.toBe(expectedSecondAddress)
 	})
 })

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'bun:test'
-import { getAppAddress } from '../../src/functions/get-app-address'
+import { getAppEndpoint } from '../../src/functions/get-app-endpoint'
 
 const logs: string[] = []
 
@@ -10,9 +10,9 @@ afterEach(() => {
 	logs.length = 0
 })
 
-describe('getAppAddress', () => {
+describe('getAppEndpoint', () => {
 	it('returns ggEncryptedAddress', async () => {
-		const result = await getAppAddress()
+		const result = await getAppEndpoint()
 		expect(result).toBeString()
 		logs.push(`> app address: ${result}`)
 	})

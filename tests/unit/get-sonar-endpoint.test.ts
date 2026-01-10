@@ -5,11 +5,11 @@ import {
 	SonarNotRunningException,
 	SonarUnavailableException
 } from '../../src/exceptions'
-import { getSonarAddress } from '../../src/functions/get-sonar-address'
+import { getSonarEndpoint } from '../../src/functions/get-sonar-endpoint'
 
 let originalFetch: typeof fetch
 
-describe('getSonarAddress', () => {
+describe('getSonarEndpoint', () => {
 	beforeEach(() => {
 		originalFetch = globalThis.fetch
 	})
@@ -34,7 +34,7 @@ describe('getSonarAddress', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarAddress('')).rejects.toThrow(SonarNotEnabledException)
+		expect(getSonarEndpoint('')).rejects.toThrow(SonarNotEnabledException)
 	})
 
 	it('throws SonarNotReadyException if sonar is not ready', async () => {
@@ -53,7 +53,7 @@ describe('getSonarAddress', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarAddress('')).rejects.toThrow(SonarNotReadyException)
+		expect(getSonarEndpoint('')).rejects.toThrow(SonarNotReadyException)
 	})
 
 	it('throws SonarNotRunningException if sonar is not running', async () => {
@@ -72,14 +72,14 @@ describe('getSonarAddress', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarAddress('')).rejects.toThrow(SonarNotRunningException)
+		expect(getSonarEndpoint('')).rejects.toThrow(SonarNotRunningException)
 	})
 
 	it('throws SonarUnavailableException if sonar server is not found', async () => {
 		globalThis.fetch = (async () => {
 			throw new Error('Failed to fetch')
 		}) as unknown as typeof fetch
-		expect(getSonarAddress('')).rejects.toThrow(SonarUnavailableException)
+		expect(getSonarEndpoint('')).rejects.toThrow(SonarUnavailableException)
 	})
 
 	it('throws SonarUnavailableException if sonar server returns bad status code', async () => {
@@ -87,7 +87,7 @@ describe('getSonarAddress', () => {
 			({
 				ok: false
 			}) as Response) as unknown as typeof fetch
-		expect(getSonarAddress('')).rejects.toThrow(SonarUnavailableException)
+		expect(getSonarEndpoint('')).rejects.toThrow(SonarUnavailableException)
 	})
 
 	it('throws SonarUnavailableException if sonar webServerAddress is not provided', async () => {
@@ -105,7 +105,7 @@ describe('getSonarAddress', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarAddress('')).rejects.toThrow(SonarUnavailableException)
+		expect(getSonarEndpoint('')).rejects.toThrow(SonarUnavailableException)
 	})
 
 	it('return Sonar webServerAddress when response is valid', async () => {
@@ -126,6 +126,6 @@ describe('getSonarAddress', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarAddress('')).resolves.toBe(expectedWebServerAddress)
+		expect(getSonarEndpoint('')).resolves.toBe(expectedWebServerAddress)
 	})
 })

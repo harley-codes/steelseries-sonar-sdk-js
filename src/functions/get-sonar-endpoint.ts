@@ -21,7 +21,7 @@ type SubAppsResponse = {
 /**
  * Retrieves the Sonar web server address from an application server's /subApps endpoint.
  *
- * @param appAddress - The base URL of the application server (e.g. "https://localhost:1234").
+ * @param appEndpoint - The base URL of the application server (e.g. "https://localhost:1234").
  * @returns A promise that resolves to the Sonar web server address string.
  *
  * @throws {SonarUnavailableException} If the app server cannot be reached, or data cannot be resolved.
@@ -34,11 +34,11 @@ type SubAppsResponse = {
  * - The response body is expected to conform to the SubAppsResponse shape and contain `subApps.sonar`.
  * - Uses a fetch TLS option that disables certificate verification (rejectUnauthorized: false).
  */
-export async function getSonarAddress(appAddress: string): Promise<string> {
+export async function getSonarEndpoint(appEndpoint: string): Promise<string> {
 	let response: Response
 
 	try {
-		response = await fetch(`${appAddress}/subApps`, {
+		response = await fetch(`${appEndpoint}/subApps`, {
 			tls: {
 				rejectUnauthorized: false
 			}

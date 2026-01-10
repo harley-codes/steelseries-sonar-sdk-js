@@ -24,7 +24,7 @@ type CoreProps = {
  * - Locates coreProps.json in the ProgramData directory under SteelSeries folders.
  * - Reads and parses the file, returning the encrypted address as a secure URL.
  */
-export async function getAppAddress(): Promise<string> {
+export async function getAppEndpoint(): Promise<string> {
 	const appDataPath = getPath()
 	const fileContents = await getContents(appDataPath)
 	const data = parseContents(fileContents)

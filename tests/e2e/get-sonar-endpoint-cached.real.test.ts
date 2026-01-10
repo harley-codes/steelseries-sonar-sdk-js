@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'bun:test'
-import { getAppAddress } from '../../src/functions/get-app-address'
-import { getSonarAddress } from '../../src/functions/get-sonar-address'
+import { getAppEndpoint } from '../../src/functions/get-app-endpoint'
+import { getSonarEndpointCached } from '../../src/functions/get-sonar-endpoint-cached'
 
 const logs: string[] = []
 
@@ -11,10 +11,10 @@ afterEach(() => {
 	logs.length = 0
 })
 
-describe('getSonarAddress', () => {
+describe('getSonarEndpointCached', () => {
 	it('returns sonarAddress', async () => {
-		const appAddress = await getAppAddress()
-		const sonarAddress = await getSonarAddress(appAddress)
+		const appAddress = await getAppEndpoint()
+		const sonarAddress = await getSonarEndpointCached(appAddress)
 		expect(sonarAddress).toBeString()
 		logs.push(`> sonar address: ${sonarAddress}`)
 	})
