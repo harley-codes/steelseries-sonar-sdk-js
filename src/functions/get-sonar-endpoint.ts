@@ -3,7 +3,7 @@ import {
 	SonarNotReadyException,
 	SonarNotRunningException,
 	SonarUnavailableException
-} from '../exceptions'
+} from '@/exceptions'
 
 type SubAppsResponse = {
 	subApps: {

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'bun:test'
-import { getAppEndpoint } from '../../src/functions/get-app-endpoint'
-import { getSonarEndpointCached } from '../../src/functions/get-sonar-endpoint-cached'
+import { getAppEndpoint } from '@/functions/get-app-endpoint'
+import { getSonarEndpointCached } from '@/functions/get-sonar-endpoint-cached'
 
 const logs: string[] = []
 

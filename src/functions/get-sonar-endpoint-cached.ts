@@ -1,5 +1,5 @@
-import { SonarUnavailableException } from '../exceptions'
-import { getSonarEndpoint } from './get-sonar-endpoint'
+import { SonarUnavailableException } from '@/exceptions'
+import { getSonarEndpoint } from '@/functions/get-sonar-endpoint'
 
 const cache = {
 	appAddress: null as string | null,

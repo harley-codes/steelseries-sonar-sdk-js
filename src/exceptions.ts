@@ -5,6 +5,12 @@ abstract class Exception extends Error {
 	}
 }
 
+export class SonarException extends Exception {
+	constructor(message = 'There was an issue interacting with the Sonar service.', cause?: Error) {
+		super(message, cause)
+	}
+}
+
 export class NotFoundException extends Exception {
 	constructor(message = 'The requested resource was not found.', cause?: Error) {
 		super(message, cause)

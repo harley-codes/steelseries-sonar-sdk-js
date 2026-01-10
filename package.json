@@ -21,6 +21,6 @@
 		"lint": "biome lint",
 		"lint-fix": "biome check --write",
 		"test-e2e": "bun test ./tests/e2e/**/*.test.ts",
-		"test-unit": "bun test --coverage ./tests/unit/**/*.test.ts"
+		"test-unit": "bun test ./tests/unit/**/*.test.ts"
 	}
 }

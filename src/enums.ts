@@ -15,3 +15,8 @@ export enum AudioChannel {
 	Auxiliary = 'aux',
 	Mic = 'mic'
 }
+
+export enum AudioMode {
+	Classic = 'classic',
+	Streamer = 'stream'
+}

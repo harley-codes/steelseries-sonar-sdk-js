@@ -1,0 +1,92 @@
+### VS Code HTTP request to /chatMix
+@SONAR_ADDRESS=http://127.0.0.1:58226
+
+############
+# CHANNELS #
+############
+
+### -> GET -> Channel Mode
+GET {{SONAR_ADDRESS}}/mode
+
+### -> SET -> Channel Mode - Classic
+PUT {{SONAR_ADDRESS}}/mode/classic
+
+### -> SET -> Channel Mode - Streamer
+PUT {{SONAR_ADDRESS}}/mode/stream
+
+### -> GET -> Volume Settings - Classic
+GET {{SONAR_ADDRESS}}/volumeSettings/classic
+
+### -> GET -> Volume Settings - Streamer
+GET {{SONAR_ADDRESS}}/volumeSettings/streamer
+
+### -> SET -> Volume Level - Classic - Master - 50%
+PUT {{SONAR_ADDRESS}}/volumeSettings/classic/Master/volume/0.5
+
+### -> SET -> Volume Level - Classic - Mute - TRUE
+PUT {{SONAR_ADDRESS}}/volumeSettings/classic/Master/mute/true
+
+### -> SET -> Volume Level - Classic - Mute - FALSE
+PUT {{SONAR_ADDRESS}}/volumeSettings/classic/Master/mute/false
+
+### -> SET -> Volume Level - Streamer - Monitoring - Master - 50%
+PUT {{SONAR_ADDRESS}}/volumeSettings/streamer/monitoring/master/volume/0.5
+
+### -> SET -> Volume Level - Streamer - Monitoring - Master - 50%
+PUT {{SONAR_ADDRESS}}/volumeSettings/streamer/streaming/master/volume/0.5
+
+
+###########
+# CHATMIX #
+###########
+
+### -> GET -> ChatMix
+GET {{SONAR_ADDRESS}}/chatMix
+# {
+#   "state": "enabled", "finiteWheel", "differentDeviceSelected", "noDeviceSelected"
+# }
+
+### -> SET -> ChatMix - 70% Game, 30% Chat
+PUT {{SONAR_ADDRESS}}/chatMix?balance=0.3
+
+#############
+# Equalizer #
+#############
+
+### -> GET -> EQ Presets - Active
+GET {{SONAR_ADDRESS}}/configs/selected
+
+### -> GET -> EQ Presets - AUX
+GET {{SONAR_ADDRESS}}/configs?vad=aux
+
+### -> SET -> EQ Preset - AUX - Music: Bright
+PUT {{SONAR_ADDRESS}}/configs/c75b5225-041c-430a-abda-dd27bbbe9485/select
+
+############
+# Hardware #
+############
+
+### -> GET -> Audio Devices
+GET {{SONAR_ADDRESS}}/audioDevices
+
+### -> GET -> EQ Presets - Active
+GET {{SONAR_ADDRESS}}/classicRedirections
+
+### -> SET -> EQ Presets - Game - Speakers
+PUT {{SONAR_ADDRESS}}/ClassicRedirections/game/deviceId/{0.0.0.00000000}.{0e5b2eb2-8d10-4e5f-b757-59a3e15def98}
+
+### -> SET -> EQ Presets - Game - Headset
+PUT {{SONAR_ADDRESS}}/ClassicRedirections/game/deviceId/{0.0.0.00000000}.{a555a65a-c167-480e-8825-220ccbe42b82}
+
+### -> SET -> EQ Presets - Audio Out - Speakers
+PUT {{SONAR_ADDRESS}}/ClassicRedirections/render/deviceId/{0.0.0.00000000}.{0e5b2eb2-8d10-4e5f-b757-59a3e15def98}
+
+### -> SET -> EQ Presets - Audio Out - Headset
+PUT {{SONAR_ADDRESS}}/ClassicRedirections/render/deviceId/{0.0.0.00000000}.{a555a65a-c167-480e-8825-220ccbe42b82}
+
+###########
+# Devices #
+###########
+
+### -> GET -> Audio Devices
+GET {{SONAR_ADDRESS}}/volumeSettings/devices/volumes

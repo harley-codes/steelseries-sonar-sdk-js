@@ -1,7 +1,7 @@
 import { promises as fsAsync } from 'node:fs'
 import { platform as getPlatform } from 'node:os'
 import { join as joinPath } from 'node:path'
-import { InvalidException, NotFoundException, UnsupportedException } from '../exceptions'
+import { InvalidException, NotFoundException, UnsupportedException } from '@/exceptions'
 
 const WINDOWS_PATHS = ['SteelSeries', 'SteelSeries Engine 3', 'coreProps.json']
 

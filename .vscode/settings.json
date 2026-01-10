@@ -13,6 +13,8 @@
 		"source.organizeImports.biome": "explicit"
 	},
 	"prettier.enable": false,
+	"typescript.preferences.importModuleSpecifier": "non-relative",
+	"javascript.preferences.importModuleSpecifier": "non-relative",
 	"files.associations": {
 		"*.json": "jsonc"
 	},
@@ -27,5 +29,5 @@
 		"**/node_modules": true,
 		"**/build": true
 	},
-	"cSpell.words": ["steelseries", "Torrisi"]
+	"cSpell.words": ["CHATMIX", "Redirections", "steelseries", "Torrisi"]
 }
