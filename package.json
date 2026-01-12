@@ -21,6 +21,8 @@
 		"lint": "biome lint",
 		"lint-fix": "biome check --write",
 		"test-e2e": "bun test ./tests/e2e/**/*.test.ts",
-		"test-unit": "bun test ./tests/unit/**/*.test.ts"
+		"test-unit": "bun test ./tests/unit/**/*.test.ts",
+		"package": "bun build ./src/index.ts --outdir=./dist",
+		"package-minify": "bun build ./src/index.ts --outdir=./dist --minify"
 	}
 }
