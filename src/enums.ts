@@ -20,3 +20,8 @@ export enum AudioMode {
 	Classic = 'classic',
 	Streamer = 'stream'
 }
+
+export enum VolumeFormat {
+	'0 to 1',
+	'0 to 100'
+}

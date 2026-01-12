@@ -3,3 +3,6 @@
 *.yml  text eol=lf
 *.txt    text eol=lf
 *.md    text eol=lf
+*.http    text eol=lf
+.gitattributes	text eol=lf
+bun.lock	text eol=lf

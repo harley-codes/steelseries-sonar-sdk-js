@@ -1,5 +1,5 @@
 {
-	"name": "steelseries-sonar-sdk-js",
+	"name": "steelseries-sonar-sdk",
 	"description": "An SDK for interacting with the SteelSeries Sonar software.",
 	"author": "Harley Torrisi <mail@harleycodes.com>",
 	"license": "MIT",
