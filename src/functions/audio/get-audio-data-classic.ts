@@ -1,27 +1,10 @@
 import type { VolumeFormat } from '@/enums'
 import { SonarException } from '@/exceptions'
-import { formatRawAudioValue } from '@/functions/helpers/format-raw-audio-value'
+import { convertApiVolumeToUserVolume } from '@/functions/converters/convert-api-volume-to-user-volume'
+import type { ChannelDataClassic, VolumeDataClassic } from '@/models/api-volume-data-classic.ok'
 import type { AudioDataClassic, ChannelAudioDataClassic } from '@/types/audio-data-classic'
 
 const DEFAULT_ERROR_TEXT = 'Failed to get audio data.'
-
-type OkResponse = {
-	masters: {
-		classic: VolumeData
-	}
-	devices: {
-		game?: VolumeData
-		chatRender?: VolumeData
-		chatCapture?: VolumeData
-		media?: VolumeData
-		aux?: VolumeData
-	}
-}
-
-type VolumeData = {
-	volume: number
-	isMuted: boolean
-}
 
 export async function getAudioDataClassic(
 	sonarEndpoint: string,
@@ -36,7 +19,7 @@ export async function getAudioDataClassic(
 	}
 
 	if (response.ok) {
-		const data = (await response.json()) as OkResponse
+		const data = (await response.json()) as VolumeDataClassic
 		if (data?.masters?.classic == null) {
 			throw new SonarException(`${DEFAULT_ERROR_TEXT} Missing required data in response.`)
 		}
@@ -56,9 +39,9 @@ export async function getAudioDataClassic(
 	}
 }
 
-function createResponseVolumeData(volumeData: VolumeData, volumeFormat: VolumeFormat): ChannelAudioDataClassic {
+function createResponseVolumeData(volumeData: ChannelDataClassic, volumeFormat: VolumeFormat): ChannelAudioDataClassic {
 	return {
-		volume: formatRawAudioValue(volumeData.volume, volumeFormat),
+		volume: convertApiVolumeToUserVolume(volumeData.volume, volumeFormat),
 		isMuted: volumeData.isMuted
 	}
 }

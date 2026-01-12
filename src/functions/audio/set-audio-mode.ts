@@ -1,18 +1,14 @@
+import { FETCH_OPTIONS_PUT } from '@/consts/fetch-options-put'
 import type { AudioMode } from '@/enums'
 import { SonarException } from '@/exceptions'
 
 const DEFAULT_ERROR_TEXT = 'Failed to set audio mode.'
 
-export async function setAudioMode(
-	sonarEndpoint: string,
-	audioMode: AudioMode
-): Promise<AudioMode> {
+export async function setAudioMode(sonarEndpoint: string, audioMode: AudioMode): Promise<AudioMode> {
 	let response: Response
 
 	try {
-		response = await fetch(`${sonarEndpoint}/mode/${audioMode}`, {
-			method: 'PUT'
-		})
+		response = await fetch(`${sonarEndpoint}/mode/${audioMode}`, FETCH_OPTIONS_PUT)
 	} catch (error) {
 		throw new SonarException(DEFAULT_ERROR_TEXT, error as Error)
 	}
@@ -20,9 +16,7 @@ export async function setAudioMode(
 	if (response.ok) {
 		const data = await response.json()
 		if (data !== audioMode) {
-			throw new SonarException(
-				`${DEFAULT_ERROR_TEXT} Expected mode to be '${audioMode}', but currently '${data}'.`
-			)
+			throw new SonarException(`${DEFAULT_ERROR_TEXT} Expected mode to be '${audioMode}', but currently '${data}'.`)
 		}
 		return data as AudioMode
 	} else {

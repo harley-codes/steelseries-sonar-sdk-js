@@ -1,33 +1,10 @@
 import type { VolumeFormat } from '@/enums'
 import { SonarException } from '@/exceptions'
-import { formatRawAudioValue } from '@/functions/helpers/format-raw-audio-value'
+import { convertApiVolumeToUserVolume } from '@/functions/converters/convert-api-volume-to-user-volume'
+import type { ChannelDataStreamer, VolumeDataStreamer } from '@/models/api-volume-data-streamer.ok'
 import type { AudioDataStreamer, ChannelAudioDataStreamer } from '@/types/audio-data-streamer'
 
 const DEFAULT_ERROR_TEXT = 'Failed to get audio data.'
-
-type OkResponse = {
-	masters: VolumeData
-	devices: {
-		game?: VolumeData
-		chatRender?: VolumeData
-		chatCapture?: VolumeData
-		media?: VolumeData
-		aux?: VolumeData
-	}
-}
-
-type VolumeData = {
-	stream: {
-		streaming: {
-			volume: number
-			isMuted: boolean
-		}
-		monitoring: {
-			volume: number
-			isMuted: boolean
-		}
-	}
-}
 
 export async function getAudioDataStream(
 	sonarEndpoint: string,
@@ -42,7 +19,7 @@ export async function getAudioDataStream(
 	}
 
 	if (response.ok) {
-		const data = (await response.json()) as OkResponse
+		const data = (await response.json()) as VolumeDataStreamer
 		if (data?.masters?.stream == null) {
 			throw new SonarException(`${DEFAULT_ERROR_TEXT} Missing required data in response.`)
 		}
@@ -62,10 +39,13 @@ export async function getAudioDataStream(
 	}
 }
 
-function createResponseVolumeData(volumeData: VolumeData, volumeFormat: VolumeFormat): ChannelAudioDataStreamer {
+function createResponseVolumeData(
+	volumeData: ChannelDataStreamer,
+	volumeFormat: VolumeFormat
+): ChannelAudioDataStreamer {
 	return {
-		volumeStreamer: formatRawAudioValue(volumeData.stream.streaming.volume, volumeFormat),
-		volumeMonitoring: formatRawAudioValue(volumeData.stream.monitoring.volume, volumeFormat),
+		volumeStreamer: convertApiVolumeToUserVolume(volumeData.stream.streaming.volume, volumeFormat),
+		volumeMonitoring: convertApiVolumeToUserVolume(volumeData.stream.monitoring.volume, volumeFormat),
 		isMutedStreamer: volumeData.stream.streaming.isMuted,
 		isMutedMonitoring: volumeData.stream.monitoring.isMuted
 	}

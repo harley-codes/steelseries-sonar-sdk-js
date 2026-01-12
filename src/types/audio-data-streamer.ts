@@ -16,3 +16,8 @@ export type ChannelAudioDataStreamer = {
 	isMutedStreamer: boolean
 	isMutedMonitoring: boolean
 }
+
+export type StreamVolume = {
+	volume: number
+	isMuted: boolean
+}

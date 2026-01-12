@@ -16,6 +16,11 @@ export enum AudioChannel {
 	Mic = 'mic'
 }
 
+export enum StreamerPath {
+	Streaming = 'streaming',
+	Monitoring = 'monitoring'
+}
+
 export enum AudioMode {
 	Classic = 'classic',
 	Streamer = 'stream'
