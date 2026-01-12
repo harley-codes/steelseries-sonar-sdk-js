@@ -1,6 +1,6 @@
 import { describe, expect, it, mock } from 'bun:test'
 import { InvalidException, NotFoundException, UnsupportedException } from '../../src/exceptions'
-import { getAppEndpoint } from '../../src/functions/get-app-endpoint'
+import { getAppEndpoint } from '../../src/functions/endpoint/get-app-endpoint'
 
 describe('getAppEndpoint', () => {
 	it('throws UnsupportedException on unsupported OS', async () => {

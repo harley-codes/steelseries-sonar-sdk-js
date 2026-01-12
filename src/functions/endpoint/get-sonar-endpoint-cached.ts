@@ -1,5 +1,5 @@
 import { SonarUnavailableException } from '@/exceptions'
-import { getSonarEndpoint } from '@/functions/get-sonar-endpoint'
+import { getSonarEndpoint } from '@/functions/endpoint/get-sonar-endpoint'
 
 const cache = {
 	appAddress: null as string | null,
@@ -7,17 +7,10 @@ const cache = {
 	timestamp: 0
 }
 
-export async function getSonarEndpointCached(
-	appAddress: string,
-	seconds: number = 60
-): Promise<string> {
+export async function getSonarEndpointCached(appAddress: string, seconds: number = 60): Promise<string> {
 	const now = Date.now()
 
-	if (
-		cache.appAddress === appAddress &&
-		cache.sonarAddress &&
-		now - cache.timestamp < seconds * 1000
-	) {
+	if (cache.appAddress === appAddress && cache.sonarAddress && now - cache.timestamp < seconds * 1000) {
 		return cache.sonarAddress
 	}
 

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, setSystemTime } from 'bun:test'
-import { getSonarEndpointCached } from '../../src/functions/get-sonar-endpoint-cached'
+import { getSonarEndpointCached } from '../../src/functions/endpoint/get-sonar-endpoint-cached'
 
 let originalFetch: typeof fetch
 

@@ -5,7 +5,7 @@ import {
 	SonarNotRunningException,
 	SonarUnavailableException
 } from '../../src/exceptions'
-import { getSonarEndpoint } from '../../src/functions/get-sonar-endpoint'
+import { getSonarEndpoint } from '../../src/functions/endpoint/get-sonar-endpoint'
 
 let originalFetch: typeof fetch
 

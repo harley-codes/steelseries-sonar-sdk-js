@@ -1,5 +1,5 @@
-import { getAppEndpoint } from '../../src/functions/get-app-endpoint'
-import { getSonarEndpoint } from '../../src/functions/get-sonar-endpoint'
+import { getAppEndpoint } from '../../src/functions/endpoint/get-app-endpoint'
+import { getSonarEndpoint } from '../../src/functions/endpoint/get-sonar-endpoint'
 
 export async function getEndpointEndToEnd() {
 	const appEndpoint = await getAppEndpoint()
