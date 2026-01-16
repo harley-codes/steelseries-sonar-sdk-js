@@ -1,5 +1,5 @@
 ### VS Code HTTP request to /chatMix
-@SONAR_ADDRESS=http://127.0.0.1:53356
+@SONAR_ADDRESS=http://127.0.0.1:61646
 
 ############
 # CHANNELS #
