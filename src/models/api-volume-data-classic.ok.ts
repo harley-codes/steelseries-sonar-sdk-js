@@ -1,17 +1,17 @@
-export type VolumeDataClassic = {
+export type ApiVolumeDataClassic = {
 	masters: {
-		classic: ChannelDataClassic
+		classic: ApiChannelDataClassic
 	}
 	devices: {
-		game?: ChannelDataClassic
-		chatRender?: ChannelDataClassic
-		chatCapture?: ChannelDataClassic
-		media?: ChannelDataClassic
-		aux?: ChannelDataClassic
+		game?: ApiChannelDataClassic
+		chatRender?: ApiChannelDataClassic
+		chatCapture?: ApiChannelDataClassic
+		media?: ApiChannelDataClassic
+		aux?: ApiChannelDataClassic
 	}
 }
 
-export type ChannelDataClassic = {
+export type ApiChannelDataClassic = {
 	volume: number
 	isMuted: boolean
 }

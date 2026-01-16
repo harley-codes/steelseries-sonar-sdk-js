@@ -4,7 +4,7 @@ import { SonarException } from '@/exceptions'
 import { convertChannelToApi } from '@/functions/converters/convert-channel-to-api'
 import { convertVolumeToApi } from '@/functions/converters/convert-volume-to-api'
 import { convertVolumeToUser } from '@/functions/converters/convert-volume-to-user'
-import type { VolumeDataStreamer } from '@/models/api-volume-data-streamer.ok'
+import type { ApiVolumeDataStreamer } from '@/models/api-volume-data-streamer.ok'
 import type { StreamVolume } from '@/types/audio-data-streamer'
 
 const DEFAULT_ERROR_TEXT = 'Failed to set audio volume.'
@@ -37,7 +37,7 @@ export async function setChannelVolumeStreamer(
 	}
 
 	if (response.ok) {
-		const data = (await response.json()) as VolumeDataStreamer
+		const data = (await response.json()) as ApiVolumeDataStreamer
 		if (data?.masters?.stream == null) {
 			throw new SonarException(`${DEFAULT_ERROR_TEXT} Missing required data in response.`)
 		}

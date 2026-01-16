@@ -1,15 +1,15 @@
-export type VolumeDataStreamer = {
-	masters: ChannelDataStreamer
+export type ApiVolumeDataStreamer = {
+	masters: ApiChannelDataStreamer
 	devices: {
-		game?: ChannelDataStreamer
-		chatRender?: ChannelDataStreamer
-		chatCapture?: ChannelDataStreamer
-		media?: ChannelDataStreamer
-		aux?: ChannelDataStreamer
+		game?: ApiChannelDataStreamer
+		chatRender?: ApiChannelDataStreamer
+		chatCapture?: ApiChannelDataStreamer
+		media?: ApiChannelDataStreamer
+		aux?: ApiChannelDataStreamer
 	}
 }
 
-export type ChannelDataStreamer = {
+export type ApiChannelDataStreamer = {
 	stream: {
 		streaming: {
 			volume: number

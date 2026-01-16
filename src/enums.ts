@@ -25,3 +25,10 @@ export enum AudioMode {
 	Classic = 'classic',
 	Streamer = 'stream'
 }
+
+export enum ChatMixState {
+	Enabled = 'enabled',
+	FiniteWheel = 'finiteWheel',
+	DifferentDeviceSelected = 'differentDeviceSelected',
+	NoDeviceSelected = 'noDeviceSelected'
+}

@@ -1,7 +1,7 @@
 import { AudioChannel } from '@/enums'
 import { SonarException } from '@/exceptions'
 import { convertVolumeToUser } from '@/functions/converters/convert-volume-to-user'
-import type { ChannelDataClassic, VolumeDataClassic } from '@/models/api-volume-data-classic.ok'
+import type { ApiChannelDataClassic, ApiVolumeDataClassic } from '@/models/api-volume-data-classic.ok'
 import type { AudioDataClassic, ChannelAudioDataClassic } from '@/types/audio-data-classic'
 
 const DEFAULT_ERROR_TEXT = 'Failed to get audio data.'
@@ -21,7 +21,7 @@ export async function getAudioDataClassic(sonarEndpoint: string): Promise<AudioD
 	}
 
 	if (response.ok) {
-		const data = (await response.json()) as VolumeDataClassic
+		const data = (await response.json()) as ApiVolumeDataClassic
 		if (data?.masters?.classic == null) {
 			throw new SonarException(`${DEFAULT_ERROR_TEXT} Missing required data in response.`)
 		}
@@ -40,7 +40,7 @@ export async function getAudioDataClassic(sonarEndpoint: string): Promise<AudioD
 	}
 }
 
-function createResponseVolumeData(volumeData: ChannelDataClassic): ChannelAudioDataClassic {
+function createResponseVolumeData(volumeData: ApiChannelDataClassic): ChannelAudioDataClassic {
 	return {
 		volume: convertVolumeToUser(volumeData.volume),
 		isMuted: volumeData.isMuted

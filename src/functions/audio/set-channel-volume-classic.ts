@@ -5,7 +5,7 @@ import { convertChannelToApi } from '@/functions/converters/convert-channel-to-a
 import { convertVolumeToApi } from '@/functions/converters/convert-volume-to-api'
 import { convertVolumeToUser } from '@/functions/converters/convert-volume-to-user'
 import type { ApiError } from '@/models/api-error'
-import type { VolumeDataClassic } from '@/models/api-volume-data-classic.ok'
+import type { ApiVolumeDataClassic } from '@/models/api-volume-data-classic.ok'
 import type { ChannelAudioDataClassic } from '@/types/audio-data-classic'
 
 const DEFAULT_ERROR_TEXT = 'Failed to set audio volume.'
@@ -36,7 +36,7 @@ export async function setChannelVolumeClassic(
 	}
 
 	if (response.ok) {
-		const data = (await response.json()) as VolumeDataClassic
+		const data = (await response.json()) as ApiVolumeDataClassic
 		if (data?.masters?.classic == null) {
 			throw new SonarException(`${DEFAULT_ERROR_TEXT} Missing required data in response.`)
 		}

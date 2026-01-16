@@ -1,7 +1,7 @@
 import { AudioChannel } from '@/enums'
 import { SonarException } from '@/exceptions'
 import { convertVolumeToUser } from '@/functions/converters/convert-volume-to-user'
-import type { ChannelDataStreamer, VolumeDataStreamer } from '@/models/api-volume-data-streamer.ok'
+import type { ApiChannelDataStreamer, ApiVolumeDataStreamer } from '@/models/api-volume-data-streamer.ok'
 import type { AudioDataStreamer, ChannelAudioDataStreamer } from '@/types/audio-data-streamer'
 
 const DEFAULT_ERROR_TEXT = 'Failed to get audio data.'
@@ -21,7 +21,7 @@ export async function getAudioDataStream(sonarEndpoint: string): Promise<AudioDa
 	}
 
 	if (response.ok) {
-		const data = (await response.json()) as VolumeDataStreamer
+		const data = (await response.json()) as ApiVolumeDataStreamer
 		if (data?.masters?.stream == null) {
 			throw new SonarException(`${DEFAULT_ERROR_TEXT} Missing required data in response.`)
 		}
@@ -40,7 +40,7 @@ export async function getAudioDataStream(sonarEndpoint: string): Promise<AudioDa
 	}
 }
 
-function createResponseVolumeData(volumeData: ChannelDataStreamer): ChannelAudioDataStreamer {
+function createResponseVolumeData(volumeData: ApiChannelDataStreamer): ChannelAudioDataStreamer {
 	return {
 		volumeStreamer: convertVolumeToUser(volumeData.stream.streaming.volume),
 		volumeMonitoring: convertVolumeToUser(volumeData.stream.monitoring.volume),

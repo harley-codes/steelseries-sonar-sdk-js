@@ -1,5 +1,6 @@
 export function convertVolumeToUser(value: number): number {
-	const formattedValue = value * 100
-	const clampedValue = Math.min(Math.max(formattedValue, 0), 100)
-	return clampedValue
+	let result = value * 100
+	result = Math.min(Math.max(result, 0), 100)
+	result = Math.floor(result)
+	return result
 }
