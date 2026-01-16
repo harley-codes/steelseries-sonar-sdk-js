@@ -4,6 +4,12 @@ import { SonarException } from '@/exceptions'
 
 const DEFAULT_ERROR_TEXT = 'Failed to set audio mode.'
 
+/**
+ * Gets audio data for all channels.
+ * @param sonarEndpoint Sonar endpoint URL
+ * @param audioMode Target audio mode
+ * @returns classic or streamer mode
+ */
 export async function setAudioMode(sonarEndpoint: string, audioMode: AudioMode): Promise<AudioMode> {
 	let response: Response
 

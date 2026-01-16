@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
-import { VolumeFormat } from '@/enums'
 import { SonarException } from '@/exceptions'
 import { getAudioDataClassic } from '@/functions/audio/get-audio-data-classic'
 
@@ -21,7 +20,7 @@ describe('getAudioDataClassic', () => {
 				text: async () => 'Some error occurred'
 			}) as Response) as unknown as typeof fetch
 
-		expect(getAudioDataClassic('', VolumeFormat['0 to 1'])).rejects.toThrow(SonarException)
+		expect(getAudioDataClassic('')).rejects.toThrow(SonarException)
 	})
 
 	it('throws SonarException when response 200 but not data', async () => {
@@ -31,17 +30,17 @@ describe('getAudioDataClassic', () => {
 				json: async () => ({})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getAudioDataClassic('', VolumeFormat['0 to 1'])).rejects.toThrow(SonarException)
+		expect(getAudioDataClassic('')).rejects.toThrow(SonarException)
 	})
 
-	it('return classic in "0 - 1" format when response 200', async () => {
+	it('return data when response 200', async () => {
 		globalThis.fetch = (async () =>
 			({
 				ok: true,
 				json: async () => ({
 					masters: {
 						classic: {
-							volume: 0.5,
+							volume: 0.49,
 							isMuted: false
 						}
 					},
@@ -49,28 +48,8 @@ describe('getAudioDataClassic', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		const response = await getAudioDataClassic('', VolumeFormat['0 to 1'])
-		expect(response.master.volume).toBe(0.5)
-		expect(response.master.isMuted).toBe(false)
-	})
-
-	it('return classic in "0 - 100" format when response 200', async () => {
-		globalThis.fetch = (async () =>
-			({
-				ok: true,
-				json: async () => ({
-					masters: {
-						classic: {
-							volume: 0.5,
-							isMuted: false
-						}
-					},
-					devices: {}
-				})
-			}) as Response) as unknown as typeof fetch
-
-		const response = await getAudioDataClassic('', VolumeFormat['0 to 100'])
-		expect(response.master.volume).toBe(50)
+		const response = await getAudioDataClassic('')
+		expect(response.master.volume).toBe(49)
 		expect(response.master.isMuted).toBe(false)
 	})
 })

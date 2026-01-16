@@ -1,27 +1,32 @@
 import { FETCH_OPTIONS_PUT } from '@/consts/fetch-options-put'
-import { type AudioChannel, SonarChannel, type VolumeFormat } from '@/enums'
+import { type AudioChannel, SonarChannel } from '@/enums'
 import { SonarException } from '@/exceptions'
-import { convertApiVolumeToUserVolume } from '@/functions/converters/convert-api-volume-to-user-volume'
-import { convertAudioChannelToSonarChannel } from '@/functions/converters/convert-audio-channel-to-sonar-channel'
-import { convertUserVolumeToApiVolume } from '@/functions/converters/convert-user-volume-to-api-volume'
+import { convertChannelToApi } from '@/functions/converters/convert-channel-to-api'
+import { convertVolumeToApi } from '@/functions/converters/convert-volume-to-api'
+import { convertVolumeToUser } from '@/functions/converters/convert-volume-to-user'
 import type { ApiError } from '@/models/api-error'
 import type { VolumeDataClassic } from '@/models/api-volume-data-classic.ok'
 import type { ChannelAudioDataClassic } from '@/types/audio-data-classic'
 
 const DEFAULT_ERROR_TEXT = 'Failed to set audio volume.'
 
+/**
+ * Sets audio data for target channel.
+ * @param sonarEndpoint Sonar endpoint URL
+ * @param volumePercent Volume in the range of 0 to 100
+ * @param channel Target audio channel
+ */
 export async function setChannelVolumeClassic(
 	sonarEndpoint: string,
-	volume: number,
-	format: VolumeFormat,
+	volumePercent: number,
 	channel: AudioChannel
 ): Promise<ChannelAudioDataClassic> {
 	let response: Response
 	let sonarChannel: SonarChannel
 
 	try {
-		sonarChannel = convertAudioChannelToSonarChannel(channel)
-		const formattedVolume = convertUserVolumeToApiVolume(volume, format)
+		sonarChannel = convertChannelToApi(channel)
+		const formattedVolume = convertVolumeToApi(volumePercent)
 		response = await fetch(
 			`${sonarEndpoint}/volumeSettings/classic/${sonarChannel}/volume/${formattedVolume}`,
 			FETCH_OPTIONS_PUT
@@ -29,7 +34,7 @@ export async function setChannelVolumeClassic(
 	} catch (error) {
 		throw new SonarException(DEFAULT_ERROR_TEXT, error as Error)
 	}
-	// console.log('TEST TEST', response)
+
 	if (response.ok) {
 		const data = (await response.json()) as VolumeDataClassic
 		if (data?.masters?.classic == null) {
@@ -43,7 +48,7 @@ export async function setChannelVolumeClassic(
 		}
 
 		const result: ChannelAudioDataClassic = {
-			volume: convertApiVolumeToUserVolume(device.volume, format),
+			volume: convertVolumeToUser(device.volume),
 			isMuted: device.isMuted
 		}
 

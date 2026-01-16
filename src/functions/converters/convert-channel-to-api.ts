@@ -1,6 +1,6 @@
 import { AudioChannel, SonarChannel } from '@/enums'
 
-export function convertAudioChannelToSonarChannel(channel: AudioChannel): SonarChannel {
+export function convertChannelToApi(channel: AudioChannel): SonarChannel {
 	switch (channel) {
 		case AudioChannel.Master:
 			return SonarChannel.Master
@@ -8,8 +8,8 @@ export function convertAudioChannelToSonarChannel(channel: AudioChannel): SonarC
 			return SonarChannel.Chat
 		case AudioChannel.Media:
 			return SonarChannel.Media
-		case AudioChannel.Auxiliary:
-			return SonarChannel.Auxiliary
+		case AudioChannel.Aux:
+			return SonarChannel.Aux
 		case AudioChannel.Mic:
 			return SonarChannel.Mic
 		default:

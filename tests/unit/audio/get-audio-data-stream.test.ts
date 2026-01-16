@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
-import { VolumeFormat } from '@/enums'
 import { SonarException } from '@/exceptions'
 import { getAudioDataStream } from '@/functions/audio/get-audio-data-stream'
 
@@ -21,7 +20,7 @@ describe('getAudioDataStream', () => {
 				text: async () => 'Some error occurred'
 			}) as Response) as unknown as typeof fetch
 
-		expect(getAudioDataStream('', VolumeFormat['0 to 1'])).rejects.toThrow(SonarException)
+		expect(getAudioDataStream('')).rejects.toThrow(SonarException)
 	})
 
 	it('throws SonarException when response 200 but not data', async () => {
@@ -31,10 +30,10 @@ describe('getAudioDataStream', () => {
 				json: async () => ({})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getAudioDataStream('', VolumeFormat['0 to 1'])).rejects.toThrow(SonarException)
+		expect(getAudioDataStream('')).rejects.toThrow(SonarException)
 	})
 
-	it('return classic in "0 - 1" format when response 200', async () => {
+	it('return data when response 200', async () => {
 		globalThis.fetch = (async () =>
 			({
 				ok: true,
@@ -42,11 +41,11 @@ describe('getAudioDataStream', () => {
 					masters: {
 						stream: {
 							streaming: {
-								volume: 0.5,
+								volume: 0.49,
 								isMuted: true
 							},
 							monitoring: {
-								volume: 0.75,
+								volume: 0.48,
 								isMuted: false
 							}
 						}
@@ -55,38 +54,10 @@ describe('getAudioDataStream', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		const response = await getAudioDataStream('', VolumeFormat['0 to 1'])
-		expect(response.master.volumeMonitoring).toBe(0.75)
+		const response = await getAudioDataStream('')
+		expect(response.master.volumeMonitoring).toBe(48)
 		expect(response.master.isMutedMonitoring).toBe(false)
-		expect(response.master.volumeStreamer).toBe(0.5)
-		expect(response.master.isMutedStreamer).toBe(true)
-	})
-
-	it('return classic in "0 - 100" format when response 200', async () => {
-		globalThis.fetch = (async () =>
-			({
-				ok: true,
-				json: async () => ({
-					masters: {
-						stream: {
-							streaming: {
-								volume: 0.5,
-								isMuted: true
-							},
-							monitoring: {
-								volume: 0.75,
-								isMuted: false
-							}
-						}
-					},
-					devices: {}
-				})
-			}) as Response) as unknown as typeof fetch
-
-		const response = await getAudioDataStream('', VolumeFormat['0 to 100'])
-		expect(response.master.volumeMonitoring).toBe(75)
-		expect(response.master.isMutedMonitoring).toBe(false)
-		expect(response.master.volumeStreamer).toBe(50)
+		expect(response.master.volumeStreamer).toBe(49)
 		expect(response.master.isMutedStreamer).toBe(true)
 	})
 })

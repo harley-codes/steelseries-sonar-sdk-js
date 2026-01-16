@@ -1,18 +1,24 @@
 import { FETCH_OPTIONS_PUT } from '@/consts/fetch-options-put'
-import { type AudioChannel, SonarChannel, StreamerPath, type VolumeFormat } from '@/enums'
+import { type AudioChannel, SonarChannel, StreamerPath } from '@/enums'
 import { SonarException } from '@/exceptions'
-import { convertApiVolumeToUserVolume } from '@/functions/converters/convert-api-volume-to-user-volume'
-import { convertAudioChannelToSonarChannel } from '@/functions/converters/convert-audio-channel-to-sonar-channel'
-import { convertUserVolumeToApiVolume } from '@/functions/converters/convert-user-volume-to-api-volume'
+import { convertChannelToApi } from '@/functions/converters/convert-channel-to-api'
+import { convertVolumeToApi } from '@/functions/converters/convert-volume-to-api'
+import { convertVolumeToUser } from '@/functions/converters/convert-volume-to-user'
 import type { VolumeDataStreamer } from '@/models/api-volume-data-streamer.ok'
-import type { ChannelAudioDataStreamer, StreamVolume } from '@/types/audio-data-streamer'
+import type { StreamVolume } from '@/types/audio-data-streamer'
 
 const DEFAULT_ERROR_TEXT = 'Failed to set audio volume.'
 
+/**
+ * Sets audio data for target channel.
+ * @param sonarEndpoint Sonar endpoint URL
+ * @param volumePercent Volume in the range of 0 to 100
+ * @param channel Target audio channel
+ * @param path Target streamer path
+ */
 export async function setChannelVolumeStreamer(
 	sonarEndpoint: string,
-	volume: number,
-	format: VolumeFormat,
+	volumePercent: number,
 	channel: AudioChannel,
 	path: StreamerPath
 ): Promise<StreamVolume> {
@@ -20,8 +26,8 @@ export async function setChannelVolumeStreamer(
 	let sonarChannel: SonarChannel
 
 	try {
-		sonarChannel = convertAudioChannelToSonarChannel(channel)
-		const formattedVolume = convertUserVolumeToApiVolume(volume, format)
+		sonarChannel = convertChannelToApi(channel)
+		const formattedVolume = convertVolumeToApi(volumePercent)
 		response = await fetch(
 			`${sonarEndpoint}/volumeSettings/streamer/${path}/${sonarChannel}/volume/${formattedVolume}`,
 			FETCH_OPTIONS_PUT
@@ -45,7 +51,7 @@ export async function setChannelVolumeStreamer(
 		const devicePath = path === StreamerPath.Streaming ? device.streaming : device.monitoring
 
 		const result: StreamVolume = {
-			volume: convertApiVolumeToUserVolume(devicePath.volume, format),
+			volume: convertVolumeToUser(devicePath.volume),
 			isMuted: devicePath.isMuted
 		}
 

@@ -3,7 +3,7 @@ export enum SonarChannel {
 	Game = 'game',
 	Chat = 'chatRender',
 	Media = 'media',
-	Auxiliary = 'aux',
+	Aux = 'aux',
 	Mic = 'chatCapture'
 }
 
@@ -12,7 +12,7 @@ export enum AudioChannel {
 	Game = 'game',
 	Chat = 'chat',
 	Media = 'media',
-	Auxiliary = 'aux',
+	Aux = 'aux',
 	Mic = 'mic'
 }
 
@@ -24,9 +24,4 @@ export enum StreamerPath {
 export enum AudioMode {
 	Classic = 'classic',
 	Streamer = 'stream'
-}
-
-export enum VolumeFormat {
-	'0 to 1',
-	'0 to 100'
 }

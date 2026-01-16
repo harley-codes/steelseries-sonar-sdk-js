@@ -1,15 +1,17 @@
-import type { VolumeFormat } from '@/enums'
+import { AudioChannel } from '@/enums'
 import { SonarException } from '@/exceptions'
-import { convertApiVolumeToUserVolume } from '@/functions/converters/convert-api-volume-to-user-volume'
+import { convertVolumeToUser } from '@/functions/converters/convert-volume-to-user'
 import type { ChannelDataStreamer, VolumeDataStreamer } from '@/models/api-volume-data-streamer.ok'
 import type { AudioDataStreamer, ChannelAudioDataStreamer } from '@/types/audio-data-streamer'
 
 const DEFAULT_ERROR_TEXT = 'Failed to get audio data.'
 
-export async function getAudioDataStream(
-	sonarEndpoint: string,
-	volumeFormat: VolumeFormat
-): Promise<AudioDataStreamer> {
+/**
+ * Gets audio data for all channels.
+ * @param sonarEndpoint Sonar endpoint URL
+ * @returns volume in the range of 0 to 100,
+ */
+export async function getAudioDataStream(sonarEndpoint: string): Promise<AudioDataStreamer> {
 	let response: Response
 
 	try {
@@ -24,13 +26,12 @@ export async function getAudioDataStream(
 			throw new SonarException(`${DEFAULT_ERROR_TEXT} Missing required data in response.`)
 		}
 		const volumeData: AudioDataStreamer = {
-			master: createResponseVolumeData(data.masters, volumeFormat),
-			game: data.devices.game && createResponseVolumeData(data.devices.game, volumeFormat),
-			chat: data.devices.chatRender && createResponseVolumeData(data.devices.chatRender, volumeFormat),
-			media: data.devices.media && createResponseVolumeData(data.devices.media, volumeFormat),
-			aux: data.devices.aux && createResponseVolumeData(data.devices.aux, volumeFormat),
-			mic: data.devices.chatCapture && createResponseVolumeData(data.devices.chatCapture, volumeFormat),
-			volumeFormat
+			[AudioChannel.Master]: createResponseVolumeData(data.masters),
+			[AudioChannel.Game]: data.devices.game && createResponseVolumeData(data.devices.game),
+			[AudioChannel.Chat]: data.devices.chatRender && createResponseVolumeData(data.devices.chatRender),
+			[AudioChannel.Media]: data.devices.media && createResponseVolumeData(data.devices.media),
+			[AudioChannel.Aux]: data.devices.aux && createResponseVolumeData(data.devices.aux),
+			[AudioChannel.Mic]: data.devices.chatCapture && createResponseVolumeData(data.devices.chatCapture)
 		}
 		return volumeData
 	} else {
@@ -39,13 +40,10 @@ export async function getAudioDataStream(
 	}
 }
 
-function createResponseVolumeData(
-	volumeData: ChannelDataStreamer,
-	volumeFormat: VolumeFormat
-): ChannelAudioDataStreamer {
+function createResponseVolumeData(volumeData: ChannelDataStreamer): ChannelAudioDataStreamer {
 	return {
-		volumeStreamer: convertApiVolumeToUserVolume(volumeData.stream.streaming.volume, volumeFormat),
-		volumeMonitoring: convertApiVolumeToUserVolume(volumeData.stream.monitoring.volume, volumeFormat),
+		volumeStreamer: convertVolumeToUser(volumeData.stream.streaming.volume),
+		volumeMonitoring: convertVolumeToUser(volumeData.stream.monitoring.volume),
 		isMutedStreamer: volumeData.stream.streaming.isMuted,
 		isMutedMonitoring: volumeData.stream.monitoring.isMuted
 	}

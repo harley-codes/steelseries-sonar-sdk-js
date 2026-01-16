@@ -1,13 +1,7 @@
-import type { VolumeFormat } from '@/enums'
+import type { AudioChannel } from '@/enums'
 
 export type AudioDataClassic = {
-	master: ChannelAudioDataClassic
-	game?: ChannelAudioDataClassic
-	chat?: ChannelAudioDataClassic
-	media?: ChannelAudioDataClassic
-	aux?: ChannelAudioDataClassic
-	mic?: ChannelAudioDataClassic
-	volumeFormat: VolumeFormat
+	[K in AudioChannel]?: ChannelAudioDataClassic
 }
 
 export type ChannelAudioDataClassic = {

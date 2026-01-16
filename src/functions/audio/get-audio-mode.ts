@@ -3,6 +3,11 @@ import { SonarException } from '@/exceptions'
 
 const DEFAULT_ERROR_TEXT = 'Failed to get audio mode.'
 
+/**
+ * Gets audio data for all channels.
+ * @param sonarEndpoint Sonar endpoint URL
+ * @returns classic or streamer mode
+ */
 export async function getAudioMode(sonarEndpoint: string): Promise<AudioMode> {
 	let response: Response
 
