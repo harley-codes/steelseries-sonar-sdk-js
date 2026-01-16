@@ -49,7 +49,7 @@ describe('getAudioDataClassic', () => {
 			}) as Response) as unknown as typeof fetch
 
 		const response = await getAudioDataClassic('')
-		expect(response.master.volume).toBe(49)
-		expect(response.master.isMuted).toBe(false)
+		expect(response.master?.volume).toBe(49)
+		expect(response.master?.isMuted).toBe(false)
 	})
 })

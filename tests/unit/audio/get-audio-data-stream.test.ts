@@ -55,9 +55,9 @@ describe('getAudioDataStream', () => {
 			}) as Response) as unknown as typeof fetch
 
 		const response = await getAudioDataStream('')
-		expect(response.master.volumeMonitoring).toBe(48)
-		expect(response.master.isMutedMonitoring).toBe(false)
-		expect(response.master.volumeStreamer).toBe(49)
-		expect(response.master.isMutedStreamer).toBe(true)
+		expect(response.master?.volumeMonitoring).toBe(48)
+		expect(response.master?.isMutedMonitoring).toBe(false)
+		expect(response.master?.volumeStreamer).toBe(49)
+		expect(response.master?.isMutedStreamer).toBe(true)
 	})
 })
