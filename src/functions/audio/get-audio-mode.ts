@@ -1,7 +1,6 @@
 import { AudioMode } from '@/enums'
-import { SonarException } from '@/exceptions'
-
-const DEFAULT_ERROR_TEXT = 'Failed to get audio mode.'
+import { SonarServerException } from '@/exceptions'
+import { requestAudioMode } from '@/sonar/requests/mode/request-audio-mode'
 
 /**
  * Gets audio data for all channels.
@@ -12,18 +11,18 @@ export async function getAudioMode(sonarEndpoint: string): Promise<AudioMode> {
 	let response: Response
 
 	try {
-		response = await fetch(`${sonarEndpoint}/mode`)
+		response = await requestAudioMode(sonarEndpoint)
 	} catch (error) {
-		throw new SonarException(DEFAULT_ERROR_TEXT, error as Error)
+		throw new SonarServerException({ cause: error as Error })
 	}
 	if (response.ok) {
 		const data = (await response.json()) as AudioMode
 		if (Object.values(AudioMode).includes(data)) {
 			return data
 		}
-		throw new SonarException(DEFAULT_ERROR_TEXT)
+		throw new SonarServerException({ message: 'Received unhandled audio mode from Sonar server' })
 	} else {
 		const data = await response.text()
-		throw new SonarException(DEFAULT_ERROR_TEXT, new Error(data))
+		throw new SonarServerException({ cause: new Error(data) })
 	}
 }

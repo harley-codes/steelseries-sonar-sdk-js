@@ -1,8 +1,6 @@
-import { FETCH_OPTIONS_PUT } from '@/consts/fetch-options-put'
 import type { AudioMode } from '@/enums'
-import { SonarException } from '@/exceptions'
-
-const DEFAULT_ERROR_TEXT = 'Failed to set audio mode.'
+import { SonarServerException } from '@/exceptions'
+import { changeAudioMode } from '@/sonar/requests/mode/change-audio-mode'
 
 /**
  * Gets audio data for all channels.
@@ -14,19 +12,19 @@ export async function setAudioMode(sonarEndpoint: string, audioMode: AudioMode):
 	let response: Response
 
 	try {
-		response = await fetch(`${sonarEndpoint}/mode/${audioMode}`, FETCH_OPTIONS_PUT)
+		response = await changeAudioMode(sonarEndpoint, audioMode)
 	} catch (error) {
-		throw new SonarException(DEFAULT_ERROR_TEXT, error as Error)
+		throw new SonarServerException({ cause: error as Error })
 	}
 
 	if (response.ok) {
 		const data = await response.json()
 		if (data !== audioMode) {
-			throw new SonarException(`${DEFAULT_ERROR_TEXT} Expected mode to be '${audioMode}', but currently '${data}'.`)
+			throw new SonarServerException({ message: 'Returned audio mode does not match requested mode' })
 		}
 		return data as AudioMode
 	} else {
 		const data = await response.text()
-		throw new SonarException(DEFAULT_ERROR_TEXT, new Error(data))
+		throw new SonarServerException({ cause: new Error(data) })
 	}
 }

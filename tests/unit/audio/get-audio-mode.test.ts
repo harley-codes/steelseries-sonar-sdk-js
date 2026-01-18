@@ -1,9 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 import { AudioMode } from '@/enums'
-import { SonarException } from '@/exceptions'
+import { SonarServerException } from '@/exceptions'
 import { getAudioMode } from '@/functions/audio/get-audio-mode'
 
 let originalFetch: typeof fetch
+
+const request = () => getAudioMode('https://localhost')
 
 describe('getAudioMode', () => {
 	beforeEach(() => {
@@ -21,7 +23,7 @@ describe('getAudioMode', () => {
 				text: async () => 'Some error occurred'
 			}) as Response) as unknown as typeof fetch
 
-		expect(getAudioMode('')).rejects.toThrow(SonarException)
+		expect(request()).rejects.toThrow(SonarServerException)
 	})
 
 	it('throws SonarException when response 200 but not data', async () => {
@@ -31,7 +33,7 @@ describe('getAudioMode', () => {
 				json: async () => ({})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getAudioMode('')).rejects.toThrow(SonarException)
+		expect(request()).rejects.toThrow(SonarServerException)
 	})
 
 	it('return classic when response 200', async () => {
@@ -41,7 +43,7 @@ describe('getAudioMode', () => {
 				json: async () => AudioMode.Classic
 			}) as Response) as unknown as typeof fetch
 
-		expect(getAudioMode('')).resolves.toBe(AudioMode.Classic)
+		expect(request()).resolves.toBe(AudioMode.Classic)
 	})
 
 	it('return streamer when response 200', async () => {
@@ -51,6 +53,6 @@ describe('getAudioMode', () => {
 				json: async () => AudioMode.Streamer
 			}) as Response) as unknown as typeof fetch
 
-		expect(getAudioMode('')).resolves.toBe(AudioMode.Streamer)
+		expect(request()).resolves.toBe(AudioMode.Streamer)
 	})
 })
