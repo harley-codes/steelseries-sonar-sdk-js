@@ -1,8 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
-import { SonarException } from '@/exceptions'
+import { SonarServerException } from '@/exceptions'
 import { getAudioDataStream } from '@/functions/audio/get-audio-data-stream'
 
 let originalFetch: typeof fetch
+
+const request = () => getAudioDataStream('https://localhost')
 
 describe('getAudioDataStream', () => {
 	beforeEach(() => {
@@ -17,10 +19,10 @@ describe('getAudioDataStream', () => {
 		globalThis.fetch = (async () =>
 			({
 				ok: false,
-				text: async () => 'Some error occurred'
+				json: async () => 'Some error occurred'
 			}) as Response) as unknown as typeof fetch
 
-		expect(getAudioDataStream('')).rejects.toThrow(SonarException)
+		expect(request()).rejects.toThrow(SonarServerException)
 	})
 
 	it('throws SonarException when response 200 but not data', async () => {
@@ -30,7 +32,7 @@ describe('getAudioDataStream', () => {
 				json: async () => ({})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getAudioDataStream('')).rejects.toThrow(SonarException)
+		expect(request()).rejects.toThrow(SonarServerException)
 	})
 
 	it('return data when response 200', async () => {
@@ -42,11 +44,11 @@ describe('getAudioDataStream', () => {
 						stream: {
 							streaming: {
 								volume: 0.49,
-								isMuted: true
+								muted: true
 							},
 							monitoring: {
 								volume: 0.48,
-								isMuted: false
+								muted: false
 							}
 						}
 					},
@@ -54,10 +56,10 @@ describe('getAudioDataStream', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		const response = await getAudioDataStream('')
-		expect(response.master?.volumeMonitoring).toBe(48)
-		expect(response.master?.isMutedMonitoring).toBe(false)
-		expect(response.master?.volumeStreamer).toBe(49)
-		expect(response.master?.isMutedStreamer).toBe(true)
+		const response = await request()
+		expect(response.master.streaming.volume).toBe(49)
+		expect(response.master.streaming.isMuted).toBe(true)
+		expect(response.master.monitoring.volume).toBe(48)
+		expect(response.master.monitoring.isMuted).toBe(false)
 	})
 })

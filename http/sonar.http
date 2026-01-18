@@ -32,7 +32,7 @@ PUT {{SONAR_ADDRESS}}/volumeSettings/classic/Master/mute/false
 ### -> SET -> Volume Level - Streamer - Monitoring - Master - 50%
 PUT {{SONAR_ADDRESS}}/volumeSettings/streamer/monitoring/master/volume/0.5
 
-### -> SET -> Volume Level - Streamer - Monitoring - Master - 50%
+### -> SET -> Volume Level - Streamer - Streaming - Master - 50%
 PUT {{SONAR_ADDRESS}}/volumeSettings/streamer/streaming/master/volume/0.5
 
 

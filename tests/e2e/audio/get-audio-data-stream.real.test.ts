@@ -6,6 +6,6 @@ describe('getAudioDataStreamer', () => {
 	it('returns audio data', async () => {
 		const sonarEndpoint = await getEndpointEndToEnd()
 		const result = await getAudioDataStream(sonarEndpoint)
-		expect(result.master?.volumeMonitoring).toBeGreaterThan(0)
+		expect(result.master.monitoring.volume).toBeGreaterThan(0)
 	})
 })

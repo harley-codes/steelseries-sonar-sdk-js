@@ -1,14 +1,11 @@
-import { FETCH_OPTIONS_PUT } from '@/consts/fetch-options-put'
-import { type AudioChannel, SonarChannel } from '@/enums'
-import { SonarException } from '@/exceptions'
+import type { AudioChannel } from '@/enums'
+import { SonarServerException } from '@/exceptions'
 import { convertChannelToApi } from '@/functions/converters/convert-channel-to-api'
 import { convertVolumeToApi } from '@/functions/converters/convert-volume-to-api'
 import { convertVolumeToUser } from '@/functions/converters/convert-volume-to-user'
-import type { ApiError } from '@/models/api-error'
-import type { ApiVolumeDataClassic } from '@/models/api-volume-data-classic.ok'
-import type { ChannelAudioDataClassic } from '@/types/audio-data-classic'
-
-const DEFAULT_ERROR_TEXT = 'Failed to set audio volume.'
+import { SonarChannel } from '@/sonar/models/audio-settings/enums/sonar-channel'
+import { changeVolumeSettingsClassic } from '@/sonar/requests/volume-settings/change-volume-settings-classic'
+import type { ChannelVolumeClassic } from '@/types/channel-volume-classic'
 
 /**
  * Sets audio data for target channel.
@@ -20,41 +17,21 @@ export async function setChannelVolumeClassic(
 	sonarEndpoint: string,
 	volumePercent: number,
 	channel: AudioChannel
-): Promise<ChannelAudioDataClassic> {
-	let response: Response
-	let sonarChannel: SonarChannel
+): Promise<ChannelVolumeClassic> {
+	const sonarChannel = convertChannelToApi(channel)
+	const formattedVolume = convertVolumeToApi(volumePercent)
+	const data = await changeVolumeSettingsClassic(sonarEndpoint, formattedVolume, sonarChannel)
 
-	try {
-		sonarChannel = convertChannelToApi(channel)
-		const formattedVolume = convertVolumeToApi(volumePercent)
-		response = await fetch(
-			`${sonarEndpoint}/volumeSettings/classic/${sonarChannel}/volume/${formattedVolume}`,
-			FETCH_OPTIONS_PUT
-		)
-	} catch (error) {
-		throw new SonarException(DEFAULT_ERROR_TEXT, error as Error)
+	const device = sonarChannel === SonarChannel.Master ? data.masters.classic : data.devices[sonarChannel]?.classic
+
+	if (!device) {
+		throw new SonarServerException({ message: `Missing device data in response.` })
 	}
 
-	if (response.ok) {
-		const data = (await response.json()) as ApiVolumeDataClassic
-		if (data?.masters?.classic == null) {
-			throw new SonarException(`${DEFAULT_ERROR_TEXT} Missing required data in response.`)
-		}
-
-		const device = sonarChannel === SonarChannel.Master ? data.masters.classic : data.devices[sonarChannel]
-
-		if (!device) {
-			throw new SonarException(`${DEFAULT_ERROR_TEXT} Missing device data in response.`)
-		}
-
-		const result: ChannelAudioDataClassic = {
-			volume: convertVolumeToUser(device.volume),
-			isMuted: device.isMuted
-		}
-
-		return result
-	} else {
-		const data = (await response.json()) as ApiError
-		throw new SonarException(data?.error ?? DEFAULT_ERROR_TEXT)
+	const result: ChannelVolumeClassic = {
+		volume: convertVolumeToUser(device.volume),
+		isMuted: device.muted
 	}
+
+	return result
 }

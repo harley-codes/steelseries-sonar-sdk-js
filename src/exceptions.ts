@@ -10,7 +10,7 @@ abstract class Exception extends Error {
 	}
 }
 
-export class SonarException extends Exception {
+abstract class SonarException extends Exception {
 	constructor(message = 'There was an issue interacting with the Sonar service.', cause?: Error) {
 		super(message, cause)
 	}

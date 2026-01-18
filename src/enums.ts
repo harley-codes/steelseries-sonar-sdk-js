@@ -1,12 +1,3 @@
-export enum SonarChannel {
-	Master = 'master',
-	Game = 'game',
-	Chat = 'chatRender',
-	Media = 'media',
-	Aux = 'aux',
-	Mic = 'chatCapture'
-}
-
 /**
  * Sonar audio mixing channels.
  * @property {@link AudioChannel.Master} - Master volume channel.

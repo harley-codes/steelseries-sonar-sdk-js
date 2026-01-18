@@ -1,8 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
-import { SonarException } from '@/exceptions'
+import { SonarServerException } from '@/exceptions'
 import { getAudioDataClassic } from '@/functions/audio/get-audio-data-classic'
 
 let originalFetch: typeof fetch
+
+const request = () => getAudioDataClassic('https://localhost')
 
 describe('getAudioDataClassic', () => {
 	beforeEach(() => {
@@ -17,10 +19,10 @@ describe('getAudioDataClassic', () => {
 		globalThis.fetch = (async () =>
 			({
 				ok: false,
-				text: async () => 'Some error occurred'
+				json: async () => 'Some error occurred'
 			}) as Response) as unknown as typeof fetch
 
-		expect(getAudioDataClassic('')).rejects.toThrow(SonarException)
+		expect(request()).rejects.toThrow(SonarServerException)
 	})
 
 	it('throws SonarException when response 200 but not data', async () => {
@@ -30,7 +32,7 @@ describe('getAudioDataClassic', () => {
 				json: async () => ({})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getAudioDataClassic('')).rejects.toThrow(SonarException)
+		expect(request()).rejects.toThrow(SonarServerException)
 	})
 
 	it('return data when response 200', async () => {
@@ -41,15 +43,15 @@ describe('getAudioDataClassic', () => {
 					masters: {
 						classic: {
 							volume: 0.49,
-							isMuted: false
+							muted: false
 						}
 					},
 					devices: {}
 				})
 			}) as Response) as unknown as typeof fetch
 
-		const response = await getAudioDataClassic('')
-		expect(response.master?.volume).toBe(49)
-		expect(response.master?.isMuted).toBe(false)
+		const response = await request()
+		expect(response.master.volume).toBe(49)
+		expect(response.master.isMuted).toBe(false)
 	})
 })
