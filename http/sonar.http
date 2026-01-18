@@ -1,5 +1,5 @@
 ### VS Code HTTP request to /chatMix
-@SONAR_ADDRESS=http://127.0.0.1:61646
+@SONAR_ADDRESS=http://127.0.0.1:50765
 
 ############
 # CHANNELS #
@@ -68,6 +68,9 @@ PUT {{SONAR_ADDRESS}}/configs/c75b5225-041c-430a-abda-dd27bbbe9485/select
 
 ### -> GET -> Audio Devices
 GET {{SONAR_ADDRESS}}/audioDevices
+
+### -> GET -> Audio Devices | Assignable
+GET {{SONAR_ADDRESS}}/audioDevices?removeSteelSeriesVAD=true
 
 ### -> GET -> EQ Presets - Active
 GET {{SONAR_ADDRESS}}/classicRedirections

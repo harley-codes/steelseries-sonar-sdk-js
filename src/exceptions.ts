@@ -1,3 +1,7 @@
+type ErrorProps = {
+	message?: string, cause?: Error
+}
+
 abstract class Exception extends Error {
 	constructor(message: string, cause?: Error) {
 		super(message, { cause })
@@ -8,6 +12,12 @@ abstract class Exception extends Error {
 export class SonarException extends Exception {
 	constructor(message = 'There was an issue interacting with the Sonar service.', cause?: Error) {
 		super(message, cause)
+	}
+}
+
+export class SonarRequestException extends SonarException {
+	constructor(error?: ErrorProps) {
+		super(error?.message ?? 'There was an issue communicating with the Sonar service.', error?.cause)
 	}
 }
 
