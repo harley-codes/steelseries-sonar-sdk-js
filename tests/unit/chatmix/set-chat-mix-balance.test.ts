@@ -1,9 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 import { ChatMixState } from '@/enums'
-import { SonarException } from '@/exceptions'
+import { SonarServerException } from '@/exceptions'
 import { setChatMixBalance } from '@/functions/chatmix/set-chat-mix-balance'
 
 let originalFetch: typeof fetch
+
+const request = (chatBalance: number) => setChatMixBalance('http://localhost', chatBalance)
 
 describe('setChatBalance', () => {
 	beforeEach(() => {
@@ -23,7 +25,7 @@ describe('setChatBalance', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(setChatMixBalance('', 0)).rejects.toThrow(SonarException)
+		expect(request(0)).rejects.toThrow(SonarServerException)
 	})
 
 	it('throws SonarException when response 200 but not data', async () => {
@@ -35,7 +37,7 @@ describe('setChatBalance', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(setChatMixBalance('', 0)).rejects.toThrow(SonarException)
+		expect(request(0)).rejects.toThrow(SonarServerException)
 	})
 
 	it('return data when response 200', async () => {
@@ -48,7 +50,7 @@ describe('setChatBalance', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		const response = await setChatMixBalance('', 0.5)
+		const response = await request(0.5)
 		expect(response.chatBalance).toBe(75)
 		expect(response.state).toBe(ChatMixState.Enabled)
 		expect(response.isEnabled).toBeTrue()

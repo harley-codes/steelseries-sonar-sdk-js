@@ -1,10 +1,9 @@
 import { ChatMixState } from '@/enums'
-import { SonarException } from '@/exceptions'
+import { SonarServerException } from '@/exceptions'
 import { convertChatMixBalanceToUser } from '@/functions/converters/convert-chat-mix-balance-to-user'
-import type { ApiChatMixData } from '@/models/api-chat-mix-data'
+import type { ChatMixData as SonarChatMixData } from '@/sonar/models/audio-settings/chatmix-data'
+import { requestChatMixState } from '@/sonar/requests/chatmix/request-chat-mix-state'
 import type { ChatMixData } from '@/types/chat-mix-data'
-
-const DEFAULT_ERROR_TEXT = 'Failed to get CHATMIX data.'
 
 /**
  * Gets CHATMIX state and data.
@@ -15,15 +14,15 @@ export async function getChatMixState(sonarEndpoint: string): Promise<ChatMixDat
 	let response: Response
 
 	try {
-		response = await fetch(`${sonarEndpoint}/chatMix`)
+		response = await requestChatMixState(sonarEndpoint)
 	} catch (error) {
-		throw new SonarException(DEFAULT_ERROR_TEXT, error as Error)
+		throw new SonarServerException({ cause: error as Error })
 	}
 
 	if (response.ok) {
-		const data = (await response.json()) as ApiChatMixData
+		const data = (await response.json()) as SonarChatMixData
 		if (data?.balance == null || data?.state == null) {
-			throw new SonarException(`${DEFAULT_ERROR_TEXT} Missing required data in response.`)
+			throw new SonarServerException({ message: 'Missing required data in response' })
 		}
 		const chatMixData: ChatMixData = {
 			chatBalance: convertChatMixBalanceToUser(data.balance),
@@ -33,6 +32,6 @@ export async function getChatMixState(sonarEndpoint: string): Promise<ChatMixDat
 		return chatMixData
 	} else {
 		const data = await response.text()
-		throw new SonarException(DEFAULT_ERROR_TEXT, new Error(data))
+		throw new SonarServerException({ cause: new Error(data) })
 	}
 }

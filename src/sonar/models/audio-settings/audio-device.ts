@@ -1,7 +1,7 @@
 import type { DeviceDataFlow } from '@/sonar/models/audio-settings/enums/device-data-flow'
 import type { DeviceDefaultRoles } from '@/sonar/models/audio-settings/enums/device-default-roles'
 import type { DeviceRole } from '@/sonar/models/audio-settings/enums/device-role'
-import type { State } from '@/sonar/models/audio-settings/enums/state.enum'
+import type { DeviceState } from '@/sonar/models/audio-settings/enums/device-state'
 
 export type AudioDevice = {
 	id: string
@@ -11,7 +11,7 @@ export type AudioDevice = {
 	channels: number
 	defaultRole: DeviceDefaultRoles
 	fwUpdateRequired: boolean
-	state: State
+	state: DeviceState
 	/** `true` if {@link DeviceRole} ≠ {@link DeviceRole.None} */
 	isVad: boolean
 }

@@ -1,4 +1,4 @@
-export enum State {
+export enum DeviceState {
 	Active = 1,
 	Disabled = 2,
 	ActiveOrDisabled = 3,

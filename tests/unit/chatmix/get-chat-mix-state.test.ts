@@ -1,9 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 import { ChatMixState } from '@/enums'
-import { SonarException } from '@/exceptions'
+import { SonarServerException } from '@/exceptions'
 import { getChatMixState } from '@/functions/chatmix/get-chat-mix-state'
 
 let originalFetch: typeof fetch
+
+const request = () => getChatMixState('http://localhost')
 
 describe('getChatMixState', () => {
 	beforeEach(() => {
@@ -21,7 +23,7 @@ describe('getChatMixState', () => {
 				text: async () => 'Some error occurred'
 			}) as Response) as unknown as typeof fetch
 
-		expect(getChatMixState('')).rejects.toThrow(SonarException)
+		expect(request()).rejects.toThrow(SonarServerException)
 	})
 
 	it('throws SonarException when response 200 but not data', async () => {
@@ -31,7 +33,7 @@ describe('getChatMixState', () => {
 				json: async () => ({})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getChatMixState('')).rejects.toThrow(SonarException)
+		expect(request()).rejects.toThrow(SonarServerException)
 	})
 
 	it('return data when classic and response 200', async () => {
@@ -44,7 +46,7 @@ describe('getChatMixState', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		const response = await getChatMixState('')
+		const response = await request()
 		expect(response.chatBalance).toBe(75)
 		expect(response.state).toBe(ChatMixState.Enabled)
 		expect(response.isEnabled).toBeTrue()
@@ -60,7 +62,7 @@ describe('getChatMixState', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		const response = await getChatMixState('')
+		const response = await request()
 		expect(response.chatBalance).toBe(75)
 		expect(response.state).toBe(ChatMixState.FiniteWheel)
 		expect(response.isEnabled).toBeFalse()

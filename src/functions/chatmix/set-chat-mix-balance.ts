@@ -1,12 +1,10 @@
-import { FETCH_OPTIONS_PUT } from '@/consts/fetch-options-put'
 import { ChatMixState } from '@/enums'
-import { SonarException } from '@/exceptions'
+import { SonarServerException } from '@/exceptions'
 import { convertChatMixBalanceToApi } from '@/functions/converters/convert-chat-mix-balance-to-api'
 import { convertChatMixBalanceToUser } from '@/functions/converters/convert-chat-mix-balance-to-user'
-import type { ApiChatMixData } from '@/models/api-chat-mix-data'
+import type { ChatMixData as SonarChatMixData } from '@/sonar/models/audio-settings/chatmix-data'
+import { changeChatMixBalance } from '@/sonar/requests/chatmix/change-chat-mix-balance'
 import type { ChatMixData } from '@/types/chat-mix-data'
-
-const DEFAULT_ERROR_TEXT = 'Failed to set CHATMIX balance.'
 
 /**
  * Set CHATMIX balance between audio(0%) and chat(100%).
@@ -18,15 +16,15 @@ export async function setChatMixBalance(sonarEndpoint: string, chatBalance: numb
 
 	try {
 		const balance = convertChatMixBalanceToApi(chatBalance)
-		response = await fetch(`${sonarEndpoint}/chatMix?balance=${balance}`, FETCH_OPTIONS_PUT)
+		response = await changeChatMixBalance(sonarEndpoint, balance)
 	} catch (error) {
-		throw new SonarException(DEFAULT_ERROR_TEXT, error as Error)
+		throw new SonarServerException({ cause: error as Error })
 	}
 
 	if (response.ok) {
-		const data = (await response.json()) as ApiChatMixData
+		const data = (await response.json()) as SonarChatMixData
 		if (data?.balance == null || data?.state == null) {
-			throw new SonarException(`${DEFAULT_ERROR_TEXT} Missing required data in response.`)
+			throw new SonarServerException({ message: 'Missing required data in response' })
 		}
 		const chatMixData: ChatMixData = {
 			chatBalance: convertChatMixBalanceToUser(data.balance),
@@ -36,6 +34,6 @@ export async function setChatMixBalance(sonarEndpoint: string, chatBalance: numb
 		return chatMixData
 	} else {
 		const data = (await response.json()) as { Message?: string }
-		throw new SonarException(data?.Message ?? DEFAULT_ERROR_TEXT)
+		throw new SonarServerException({ message: data.Message })
 	}
 }
