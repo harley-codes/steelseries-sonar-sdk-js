@@ -1,6 +1,6 @@
 import { SonarRequestException } from '@/exceptions'
-import type { AudioDevice as SonarAudioDevice } from '@/sonar/models/audio-settings/audio-device'
 import type { DeviceDataFlow } from '@/sonar/models/audio-settings/enums/device-data-flow'
+import type { AudioDevice as SonarAudioDevice } from '@/sonar/models/devices/audio-device'
 
 type Params = {
 	deviceDataFlow?: DeviceDataFlow

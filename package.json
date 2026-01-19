@@ -21,6 +21,7 @@
 		"lint": "biome lint",
 		"lint-fix": "biome check --write",
 		"test-e2e": "bun test ./tests/e2e/**/*.test.ts",
+		"test-e2e-endpoint": "bun test ./tests/e2e/**/*.test.ts -t getSonarEndpoint",
 		"test-unit": "bun test ./tests/unit/**/*.test.ts",
 		"test-all": "bun test-unit && bun test-e2e",
 		"package": "bun build ./src/index.ts --outdir=./dist",

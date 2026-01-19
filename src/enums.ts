@@ -17,6 +17,24 @@ export enum AudioChannel {
 }
 
 /**
+ * Sonar device channels.
+ * @property {@link DeviceChannel.Output} - All output channels.
+ * @property {@link DeviceChannel.Game} - Game output channel.
+ * @property {@link DeviceChannel.Chat} - Chat output channel.
+ * @property {@link DeviceChannel.Media} - Media output channel.
+ * @property {@link DeviceChannel.Aux} - Auxiliary output channel.
+ * @property {@link DeviceChannel.Mic} - Microphone input channel.
+ */
+export enum DeviceChannel {
+	Output = 'render',
+	Game = 'game',
+	Chat = 'chat',
+	Media = 'media',
+	Aux = 'aux',
+	Mic = 'mic'
+}
+
+/**
  * Sonar Streamer Mode path.
  * @property {@link StreamerPath.Streaming} - What the audience will hear.
  * @property {@link StreamerPath.Monitoring} - What the owner will hear.
