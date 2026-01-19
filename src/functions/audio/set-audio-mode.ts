@@ -1,5 +1,5 @@
 import type { AudioMode } from '@/enums'
-import { SonarServerException } from '@/exceptions'
+import { SonarRequestException } from '@/exceptions'
 import { changeAudioMode } from '@/sonar/requests/mode/change-audio-mode'
 
 /**
@@ -14,17 +14,17 @@ export async function setAudioMode(sonarEndpoint: string, audioMode: AudioMode):
 	try {
 		response = await changeAudioMode(sonarEndpoint, audioMode)
 	} catch (error) {
-		throw new SonarServerException({ cause: error as Error })
+		throw new SonarRequestException({ innerException: error as Error })
 	}
 
 	if (response.ok) {
 		const data = await response.json()
 		if (data !== audioMode) {
-			throw new SonarServerException({ message: 'Returned audio mode does not match requested mode' })
+			throw new SonarRequestException({ message: 'Returned audio mode does not match requested mode' })
 		}
 		return data as AudioMode
 	} else {
 		const data = await response.text()
-		throw new SonarServerException({ cause: new Error(data) })
+		throw new SonarRequestException({ innerException: new Error(data) })
 	}
 }

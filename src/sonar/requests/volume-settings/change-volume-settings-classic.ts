@@ -1,4 +1,4 @@
-import { SonarServerException } from '@/exceptions'
+import { SonarRequestException } from '@/exceptions'
 import type { SonarChannel } from '@/sonar/models/audio-settings/enums/sonar-channel'
 import type { VolumeSettingsClassic } from '@/sonar/models/audio-settings/volume-settings-classic'
 
@@ -12,16 +12,16 @@ export async function changeVolumeSettingsClassic(
 		const url = new URL(`${sonarEndpoint}/volumeSettings/classic/${deviceRole}/volume/${volume}`)
 		response = await fetch(url, { method: 'PUT' })
 	} catch (error) {
-		throw new SonarServerException({ cause: error as Error })
+		throw new SonarRequestException({ innerException: error as Error })
 	}
 	if (response.ok) {
 		const data = (await response.json()) as VolumeSettingsClassic
 		if (data?.masters?.classic == null) {
-			throw new SonarServerException({ cause: new Error('Missing required data in response.') })
+			throw new SonarRequestException({ innerException: new Error('Missing required data in response.') })
 		}
 		return data
 	} else {
 		const data = (await response.json()) as { error: string }
-		throw new SonarServerException({ cause: new Error(data?.error ?? data) })
+		throw new SonarRequestException({ innerException: new Error(data?.error ?? data) })
 	}
 }

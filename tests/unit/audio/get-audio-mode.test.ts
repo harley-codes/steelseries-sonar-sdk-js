@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 import { AudioMode } from '@/enums'
-import { SonarServerException } from '@/exceptions'
+import { SonarRequestException } from '@/exceptions'
 import { getAudioMode } from '@/functions/audio/get-audio-mode'
 
 let originalFetch: typeof fetch
@@ -23,7 +23,7 @@ describe('getAudioMode', () => {
 				text: async () => 'Some error occurred'
 			}) as Response) as unknown as typeof fetch
 
-		expect(request()).rejects.toThrow(SonarServerException)
+		expect(request()).rejects.toThrow(SonarRequestException)
 	})
 
 	it('throws SonarException when response 200 but not data', async () => {
@@ -33,7 +33,7 @@ describe('getAudioMode', () => {
 				json: async () => ({})
 			}) as Response) as unknown as typeof fetch
 
-		expect(request()).rejects.toThrow(SonarServerException)
+		expect(request()).rejects.toThrow(SonarRequestException)
 	})
 
 	it('return classic when response 200', async () => {

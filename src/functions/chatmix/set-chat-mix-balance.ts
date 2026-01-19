@@ -1,5 +1,5 @@
 import { ChatMixState } from '@/enums'
-import { SonarServerException } from '@/exceptions'
+import { SonarRequestException } from '@/exceptions'
 import { convertChatMixBalanceToApi } from '@/functions/converters/convert-chat-mix-balance-to-api'
 import { convertChatMixBalanceToUser } from '@/functions/converters/convert-chat-mix-balance-to-user'
 import type { ChatMixData as SonarChatMixData } from '@/sonar/models/audio-settings/chatmix-data'
@@ -18,13 +18,13 @@ export async function setChatMixBalance(sonarEndpoint: string, chatBalance: numb
 		const balance = convertChatMixBalanceToApi(chatBalance)
 		response = await changeChatMixBalance(sonarEndpoint, balance)
 	} catch (error) {
-		throw new SonarServerException({ cause: error as Error })
+		throw new SonarRequestException({ innerException: error as Error })
 	}
 
 	if (response.ok) {
 		const data = (await response.json()) as SonarChatMixData
 		if (data?.balance == null || data?.state == null) {
-			throw new SonarServerException({ message: 'Missing required data in response' })
+			throw new SonarRequestException({ message: 'Missing required data in response' })
 		}
 		const chatMixData: ChatMixData = {
 			chatBalance: convertChatMixBalanceToUser(data.balance),
@@ -34,6 +34,6 @@ export async function setChatMixBalance(sonarEndpoint: string, chatBalance: numb
 		return chatMixData
 	} else {
 		const data = (await response.json()) as { Message?: string }
-		throw new SonarServerException({ message: data.Message })
+		throw new SonarRequestException({ message: data.Message })
 	}
 }

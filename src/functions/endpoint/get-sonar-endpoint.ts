@@ -1,9 +1,4 @@
-import {
-	SonarNotEnabledException,
-	SonarNotReadyException,
-	SonarNotRunningException,
-	SonarUnavailableException
-} from '@/exceptions'
+import { InitializeErrorReason, SonarInitializationException } from '@/exceptions'
 
 type SubAppsResponse = {
 	subApps: {
@@ -22,12 +17,9 @@ type SubAppsResponse = {
  * Retrieves the Sonar web server address from an application server's /subApps endpoint.
  *
  * @param appEndpoint - The base URL of the application server (e.g. "https://localhost:1234").
- * @returns A promise that resolves to the Sonar web server address string.
+ * @returns A promise that resolves to the Sonar web server address.
  *
- * @throws {SonarUnavailableException} If the app server cannot be reached, or data cannot be resolved.
- * @throws {SonarNotEnabledException} If the Sonar sub-application exists but is not enabled.
- * @throws {SonarNotRunningException} If the Sonar sub-application exists but is not running.
- * @throws {SonarNotReadyException} If the Sonar sub-application exists but is not ready.
+ * @throws {SonarInitializationException} If the sonar server cannot be determined.
  *
  * @remarks
  * - Performs a GET request to `${appAddress}/subApps`.
@@ -44,11 +36,16 @@ export async function getSonarEndpoint(appEndpoint: string): Promise<string> {
 			}
 		})
 	} catch (error) {
-		throw new SonarUnavailableException('Unable to reach app server endpoint.', error as Error)
+		throw new SonarInitializationException({
+			reason: InitializeErrorReason.NotResponding,
+			innerException: error as Error
+		})
 	}
 
 	if (!response.ok) {
-		throw new SonarUnavailableException('Unable to reach app server endpoint.')
+		throw new SonarInitializationException({
+			reason: InitializeErrorReason.NotResponding
+		})
 	}
 
 	const result: SubAppsResponse = (await response.json()) as SubAppsResponse
@@ -56,25 +53,35 @@ export async function getSonarEndpoint(appEndpoint: string): Promise<string> {
 	const sonar = result?.subApps?.sonar
 
 	if (!sonar) {
-		throw new SonarUnavailableException('Sonar sub-application is missing.')
+		throw new SonarInitializationException({
+			reason: InitializeErrorReason.NotAvailable
+		})
 	}
 
 	if (!sonar.isEnabled) {
-		throw new SonarNotEnabledException()
+		throw new SonarInitializationException({
+			reason: InitializeErrorReason.NotEnabled
+		})
 	}
 
 	if (!sonar.isRunning) {
-		throw new SonarNotRunningException()
+		throw new SonarInitializationException({
+			reason: InitializeErrorReason.NotRunning
+		})
 	}
 
 	if (!sonar.isReady) {
-		throw new SonarNotReadyException()
+		throw new SonarInitializationException({
+			reason: InitializeErrorReason.NotReady
+		})
 	}
 
 	const sonarAddress = sonar.metadata?.webServerAddress
 
 	if (!sonarAddress) {
-		throw new SonarUnavailableException('Sonar web server address is missing.')
+		throw new SonarInitializationException({
+			reason: InitializeErrorReason.NotAvailable
+		})
 	}
 
 	return sonarAddress

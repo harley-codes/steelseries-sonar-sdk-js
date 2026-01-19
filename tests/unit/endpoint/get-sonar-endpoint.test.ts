@@ -1,13 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
-import {
-	SonarNotEnabledException,
-	SonarNotReadyException,
-	SonarNotRunningException,
-	SonarUnavailableException
-} from '../../../src/exceptions'
+import { InitializeErrorReason, SonarInitializationException } from '../../../src/exceptions'
 import { getSonarEndpoint } from '../../../src/functions/endpoint/get-sonar-endpoint'
 
 let originalFetch: typeof fetch
+
+const request = () => getSonarEndpoint('')
 
 describe('getSonarEndpoint', () => {
 	beforeEach(() => {
@@ -18,7 +15,7 @@ describe('getSonarEndpoint', () => {
 		globalThis.fetch = originalFetch
 	})
 
-	it('throws SonarNotEnabledException if sonar is not enabled', async () => {
+	it('throws NotEnabled Exception if sonar is not enabled', async () => {
 		globalThis.fetch = (async () =>
 			({
 				ok: true,
@@ -34,10 +31,12 @@ describe('getSonarEndpoint', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarEndpoint('')).rejects.toThrow(SonarNotEnabledException)
+		const rejects = expect(request()).rejects
+		rejects.toThrow(SonarInitializationException)
+		rejects.toMatchObject({ reason: InitializeErrorReason.NotEnabled })
 	})
 
-	it('throws SonarNotReadyException if sonar is not ready', async () => {
+	it('throws NotReady Exception if sonar is not ready', async () => {
 		globalThis.fetch = (async () =>
 			({
 				ok: true,
@@ -53,10 +52,12 @@ describe('getSonarEndpoint', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarEndpoint('')).rejects.toThrow(SonarNotReadyException)
+		const rejects = expect(request()).rejects
+		rejects.toThrow(SonarInitializationException)
+		rejects.toMatchObject({ reason: InitializeErrorReason.NotReady })
 	})
 
-	it('throws SonarNotRunningException if sonar is not running', async () => {
+	it('throws NotRunning Exception if sonar is not running', async () => {
 		globalThis.fetch = (async () =>
 			({
 				ok: true,
@@ -72,25 +73,31 @@ describe('getSonarEndpoint', () => {
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarEndpoint('')).rejects.toThrow(SonarNotRunningException)
+		const rejects = expect(request()).rejects
+		rejects.toThrow(SonarInitializationException)
+		rejects.toMatchObject({ reason: InitializeErrorReason.NotRunning })
 	})
 
-	it('throws SonarUnavailableException if sonar server is not found', async () => {
+	it('throws NotResponding Exception if sonar server is not found', async () => {
 		globalThis.fetch = (async () => {
 			throw new Error('Failed to fetch')
 		}) as unknown as typeof fetch
-		expect(getSonarEndpoint('')).rejects.toThrow(SonarUnavailableException)
+		const rejects = expect(request()).rejects
+		rejects.toThrow(SonarInitializationException)
+		rejects.toMatchObject({ reason: InitializeErrorReason.NotResponding })
 	})
 
-	it('throws SonarUnavailableException if sonar server returns bad status code', async () => {
+	it('throws NotResponding Exception if sonar server returns bad status code', async () => {
 		globalThis.fetch = (async () =>
 			({
 				ok: false
 			}) as Response) as unknown as typeof fetch
-		expect(getSonarEndpoint('')).rejects.toThrow(SonarUnavailableException)
+		const rejects = expect(request()).rejects
+		rejects.toThrow(SonarInitializationException)
+		rejects.toMatchObject({ reason: InitializeErrorReason.NotResponding })
 	})
 
-	it('throws SonarUnavailableException if sonar webServerAddress is not provided', async () => {
+	it('throws NotAvailable Exception if sonar webServerAddress is not provided', async () => {
 		globalThis.fetch = (async () =>
 			({
 				ok: true,
@@ -99,13 +106,15 @@ describe('getSonarEndpoint', () => {
 						sonar: {
 							isEnabled: true,
 							isReady: true,
-							isRunning: false
+							isRunning: true
 						}
 					}
 				})
 			}) as Response) as unknown as typeof fetch
 
-		expect(getSonarEndpoint('')).rejects.toThrow(SonarUnavailableException)
+		const rejects = expect(request()).rejects
+		rejects.toThrow(SonarInitializationException)
+		rejects.toMatchObject({ reason: InitializeErrorReason.NotAvailable })
 	})
 
 	it('return Sonar webServerAddress when response is valid', async () => {

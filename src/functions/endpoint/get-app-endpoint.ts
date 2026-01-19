@@ -1,7 +1,7 @@
 import { promises as fsAsync } from 'node:fs'
 import { platform as getPlatform } from 'node:os'
 import { join as joinPath } from 'node:path'
-import { InvalidException, NotFoundException, UnsupportedException } from '@/exceptions'
+import { InitializeErrorReason, SonarInitializationException } from '@/exceptions'
 
 const WINDOWS_PATHS = ['SteelSeries', 'SteelSeries Engine 3', 'coreProps.json']
 
@@ -15,9 +15,7 @@ type CoreProps = {
  * @returns A promise that resolves to the GG application's secure address string (e.g., "https://..."),
  *          as found in the ggEncryptedAddress property of coreProps.json.
  *
- * @throws {NotFoundException} If the ggEncryptedAddress is missing or the file cannot be read.
- * @throws {UnsupportedException} If the operating system is not Windows.
- * @throws {InvalidException} If the coreProps.json contents cannot be parsed.
+ * @throws {SonarInitializationException} If the GG server cannot be determined.
  *
  * @remarks
  * - Only supports Windows OS; throws on other platforms.
@@ -33,7 +31,9 @@ export async function getAppEndpoint(): Promise<string> {
 		return `https://${data.ggEncryptedAddress}`
 	}
 
-	throw new NotFoundException(`ggEncryptedAddress not found in ${appDataPath}`)
+	throw new SonarInitializationException({
+		reason: InitializeErrorReason.BadConfig
+	})
 }
 
 function getPath(): string {
@@ -44,7 +44,9 @@ function getPath(): string {
 			return joinPath(programData, ...WINDOWS_PATHS)
 		}
 		default:
-			throw new UnsupportedException(`Operating system is not supported: ${os}`)
+			throw new SonarInitializationException({
+				reason: InitializeErrorReason.OSUnsupported
+			})
 	}
 }
 
@@ -52,7 +54,10 @@ async function getContents(path: string): Promise<string> {
 	try {
 		return await fsAsync.readFile(path, 'utf8')
 	} catch (error) {
-		throw new NotFoundException(`Could not read file at path: ${path}`, error as Error)
+		throw new SonarInitializationException({
+			reason: InitializeErrorReason.BadConfig,
+			innerException: error as Error
+		})
 	}
 }
 
@@ -60,6 +65,9 @@ function parseContents(contents: string): CoreProps {
 	try {
 		return JSON.parse(contents) as CoreProps
 	} catch (error) {
-		throw new InvalidException('Failed to parse coreProps.json contents', error as Error)
+		throw new SonarInitializationException({
+			reason: InitializeErrorReason.BadConfig,
+			innerException: error as Error
+		})
 	}
 }

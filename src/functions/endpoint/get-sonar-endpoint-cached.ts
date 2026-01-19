@@ -1,4 +1,3 @@
-import { SonarUnavailableException } from '@/exceptions'
 import { getSonarEndpoint } from '@/functions/endpoint/get-sonar-endpoint'
 
 const cache = {
@@ -24,6 +23,6 @@ export async function getSonarEndpointCached(appAddress: string, seconds: number
 		cache.appAddress = null
 		cache.sonarAddress = null
 		cache.timestamp = 0
-		throw new SonarUnavailableException('Sonar web server address is missing.', error as Error)
+		throw error
 	}
 }

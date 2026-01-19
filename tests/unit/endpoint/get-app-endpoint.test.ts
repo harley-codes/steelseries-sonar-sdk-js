@@ -1,16 +1,18 @@
 import { describe, expect, it, mock } from 'bun:test'
-import { InvalidException, NotFoundException, UnsupportedException } from '../../../src/exceptions'
+import { InitializeErrorReason, SonarInitializationException } from '../../../src/exceptions'
 import { getAppEndpoint } from '../../../src/functions/endpoint/get-app-endpoint'
 
 describe('getAppEndpoint', () => {
-	it('throws UnsupportedException on unsupported OS', async () => {
+	it('throws Unsupported Exception on unsupported OS', async () => {
 		mock.module('node:os', () => ({
 			platform: () => 'linux'
 		}))
-		expect(getAppEndpoint()).rejects.toThrow(UnsupportedException)
+		const rejects = expect(getAppEndpoint()).rejects
+		rejects.toThrow(SonarInitializationException)
+		rejects.toMatchObject({ reason: InitializeErrorReason.OSUnsupported })
 	})
 
-	it('throws NotFoundException when appData file does not exist', async () => {
+	it('throws BadConfig Exception when appData file does not exist', async () => {
 		mock.module('node:os', () => ({
 			platform: () => 'win32'
 		}))
@@ -21,10 +23,12 @@ describe('getAppEndpoint', () => {
 				}
 			}
 		}))
-		expect(getAppEndpoint()).rejects.toThrow(NotFoundException)
+		const rejects = expect(getAppEndpoint()).rejects
+		rejects.toThrow(SonarInitializationException)
+		rejects.toMatchObject({ reason: InitializeErrorReason.BadConfig })
 	})
 
-	it('throws InvalidException when appData file is invalid JSON', async () => {
+	it('throws BadConfig Exception when appData file is invalid JSON', async () => {
 		mock.module('node:os', () => ({
 			platform: () => 'win32'
 		}))
@@ -33,10 +37,12 @@ describe('getAppEndpoint', () => {
 				readFile: async () => 'invalid json'
 			}
 		}))
-		expect(getAppEndpoint()).rejects.toThrow(InvalidException)
+		const rejects = expect(getAppEndpoint()).rejects
+		rejects.toThrow(SonarInitializationException)
+		rejects.toMatchObject({ reason: InitializeErrorReason.BadConfig })
 	})
 
-	it('throws NotFoundException when ggEncryptedAddress is missing', async () => {
+	it('throws BadConfig Exception when ggEncryptedAddress is missing', async () => {
 		mock.module('node:os', () => ({
 			platform: () => 'win32'
 		}))
@@ -45,7 +51,9 @@ describe('getAppEndpoint', () => {
 				readFile: async () => JSON.stringify({})
 			}
 		}))
-		expect(getAppEndpoint()).rejects.toThrow(NotFoundException)
+		const rejects = expect(getAppEndpoint()).rejects
+		rejects.toThrow(SonarInitializationException)
+		rejects.toMatchObject({ reason: InitializeErrorReason.BadConfig })
 	})
 
 	it('returns ggEncryptedAddress when file is valid', async () => {

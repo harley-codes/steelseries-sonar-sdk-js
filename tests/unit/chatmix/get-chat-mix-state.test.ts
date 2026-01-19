@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 import { ChatMixState } from '@/enums'
-import { SonarServerException } from '@/exceptions'
+import { SonarRequestException } from '@/exceptions'
 import { getChatMixState } from '@/functions/chatmix/get-chat-mix-state'
 
 let originalFetch: typeof fetch
@@ -23,7 +23,7 @@ describe('getChatMixState', () => {
 				text: async () => 'Some error occurred'
 			}) as Response) as unknown as typeof fetch
 
-		expect(request()).rejects.toThrow(SonarServerException)
+		expect(request()).rejects.toThrow(SonarRequestException)
 	})
 
 	it('throws SonarException when response 200 but not data', async () => {
@@ -33,7 +33,7 @@ describe('getChatMixState', () => {
 				json: async () => ({})
 			}) as Response) as unknown as typeof fetch
 
-		expect(request()).rejects.toThrow(SonarServerException)
+		expect(request()).rejects.toThrow(SonarRequestException)
 	})
 
 	it('return data when classic and response 200', async () => {

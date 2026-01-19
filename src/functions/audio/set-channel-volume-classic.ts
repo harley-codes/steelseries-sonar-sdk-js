@@ -1,5 +1,5 @@
 import type { AudioChannel } from '@/enums'
-import { SonarServerException } from '@/exceptions'
+import { SonarRequestException } from '@/exceptions'
 import { convertChannelToApi } from '@/functions/converters/convert-channel-to-api'
 import { convertVolumeToApi } from '@/functions/converters/convert-volume-to-api'
 import { convertVolumeToUser } from '@/functions/converters/convert-volume-to-user'
@@ -25,7 +25,7 @@ export async function setChannelVolumeClassic(
 	const device = sonarChannel === SonarChannel.Master ? data.masters.classic : data.devices[sonarChannel]?.classic
 
 	if (!device) {
-		throw new SonarServerException({ message: `Missing device data in response.` })
+		throw new SonarRequestException({ message: `Missing device data in response.` })
 	}
 
 	const result: ChannelVolumeClassic = {

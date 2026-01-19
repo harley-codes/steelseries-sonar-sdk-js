@@ -1,5 +1,5 @@
 import { DeviceFlow } from '@/enums'
-import { SonarServerException } from '@/exceptions'
+import { SonarRequestException } from '@/exceptions'
 import type { AudioDevice as SonarAudioDevice } from '@/sonar/models/audio-settings/audio-device'
 import { DeviceDataFlow } from '@/sonar/models/audio-settings/enums/device-data-flow'
 import { requestAudioDevices } from '@/sonar/requests/audio-devices/request-audio-devices'
@@ -23,20 +23,20 @@ export async function getAudioDevices(sonarEndpoint: string, deviceType?: Device
 		}
 		response = await requestAudioDevices(sonarEndpoint, { deviceDataFlow, removeSteelSeriesVAD: true })
 	} catch (error) {
-		throw new SonarServerException({
-			cause: error as Error
+		throw new SonarRequestException({
+			innerException: error as Error
 		})
 	}
 
 	if (!response.ok) {
 		const error = await response.text()
-		throw new SonarServerException({ message: `Failed to get audio devices: ${error}` })
+		throw new SonarRequestException({ message: `Failed to get audio devices: ${error}` })
 	}
 
 	const data = (await response.json()) as SonarAudioDevice[]
 
 	if (!Array.isArray(data)) {
-		throw new SonarServerException({ message: 'Invalid audio devices response format.' })
+		throw new SonarRequestException({ message: 'Invalid audio devices response format.' })
 	}
 
 	const audioDevices: AudioDevice[] = data.map((device) => ({
@@ -55,6 +55,6 @@ function getDeviceTypeFromDataFlow(dataFlow: DeviceDataFlow): DeviceFlow {
 		case DeviceDataFlow.Render:
 			return DeviceFlow.Output
 		default:
-			throw new SonarServerException({ message: `Unknown device data flow: ${dataFlow}` })
+			throw new SonarRequestException({ message: `Unknown device data flow: ${dataFlow}` })
 	}
 }

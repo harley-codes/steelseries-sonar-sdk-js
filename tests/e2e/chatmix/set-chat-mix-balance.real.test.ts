@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test'
 import { getEndpointEndToEnd } from 'tests/helpers/get-endpoint-e2e'
 import { AudioMode, ChatMixState } from '@/enums'
-import { SonarServerException } from '@/exceptions'
+import { SonarRequestException } from '@/exceptions'
 import { setAudioMode } from '@/functions/audio/set-audio-mode'
 import { setChatMixBalance } from '@/functions/chatmix/set-chat-mix-balance'
 
@@ -20,6 +20,6 @@ describe('setChatBalance', () => {
 	it('throws when streamer mode enabled', async () => {
 		const sonarEndpoint = await getEndpointEndToEnd()
 		await setAudioMode(sonarEndpoint, AudioMode.Streamer)
-		expect(setChatMixBalance(sonarEndpoint, 0)).rejects.toThrow(SonarServerException)
+		expect(setChatMixBalance(sonarEndpoint, 0)).rejects.toThrow(SonarRequestException)
 	})
 })
