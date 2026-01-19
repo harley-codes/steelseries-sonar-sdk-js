@@ -1,3 +1,5 @@
+import { SonarRequestException } from '@/exceptions'
+import type { AudioDevice as SonarAudioDevice } from '@/sonar/models/audio-settings/audio-device'
 import type { DeviceDataFlow } from '@/sonar/models/audio-settings/enums/device-data-flow'
 
 type Params = {
@@ -6,7 +8,7 @@ type Params = {
 	removeSteelSeriesVAD?: boolean
 }
 
-export async function requestAudioDevices(sonarEndpoint: string, params: Params): Promise<Response> {
+export async function requestAudioDevices(sonarEndpoint: string, params: Params): Promise<SonarAudioDevice[]> {
 	const { deviceDataFlow, onlySteelSeriesVAD = false, removeSteelSeriesVAD = false } = params
 
 	const url = new URL(`${sonarEndpoint}/audioDevices`)
@@ -15,5 +17,26 @@ export async function requestAudioDevices(sonarEndpoint: string, params: Params)
 	if (deviceDataFlow !== undefined) {
 		url.searchParams.append('deviceDataFlow', deviceDataFlow.toString())
 	}
-	return await fetch(url)
+
+	let response: Response
+	try {
+		response = await fetch(url)
+	} catch (error) {
+		throw new SonarRequestException({
+			innerException: error as Error
+		})
+	}
+
+	if (!response.ok) {
+		const error = await response.text()
+		throw new SonarRequestException({ message: `Failed to get audio devices: ${error}` })
+	}
+
+	const data = (await response.json()) as SonarAudioDevice[]
+
+	if (!Array.isArray(data)) {
+		throw new SonarRequestException({ message: 'Invalid audio devices response format.' })
+	}
+
+	return data
 }
