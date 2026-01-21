@@ -2,3 +2,4 @@ TODO: Use the sonar.http file to build better exception classes.
 TODO: Seperate ./test from package - give its own config
 TODO: Better error handling when not in classic or streamer mode
 TODO: Improve set stream audio response type
+TODO: Add mute support /w toggling
