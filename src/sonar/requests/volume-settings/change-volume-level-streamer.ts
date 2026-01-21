@@ -1,22 +1,24 @@
 import { SonarRequestException } from '@/exceptions'
 import type { SonarChannel } from '@/sonar/models/audio-settings/enums/sonar-channel'
-import type { VolumeSettingsClassic } from '@/sonar/models/audio-settings/volume-settings-classic'
+import type { StreamingPath } from '@/sonar/models/audio-settings/enums/streaming-path'
+import type { VolumeSettingsStreamer } from '@/sonar/models/audio-settings/volume-settings-streamer'
 
-export async function changeVolumeSettingsClassic(
+export async function changeVolumeLevelStreamer(
 	sonarEndpoint: string,
 	volume: number,
-	deviceRole: SonarChannel
-): Promise<VolumeSettingsClassic> {
+	channel: SonarChannel,
+	path: StreamingPath
+): Promise<VolumeSettingsStreamer> {
 	let response: Response
 	try {
-		const url = new URL(`${sonarEndpoint}/volumeSettings/classic/${deviceRole}/volume/${volume}`)
+		const url = new URL(`${sonarEndpoint}/volumeSettings/streamer/${path}/${channel}/volume/${volume}`)
 		response = await fetch(url, { method: 'PUT' })
 	} catch (error) {
 		throw new SonarRequestException({ innerException: error as Error })
 	}
 	if (response.ok) {
-		const data = (await response.json()) as VolumeSettingsClassic
-		if (data?.masters?.classic == null) {
+		const data = (await response.json()) as VolumeSettingsStreamer
+		if (data?.masters?.stream == null) {
 			throw new SonarRequestException({ innerException: new Error('Missing required data in response.') })
 		}
 		return data

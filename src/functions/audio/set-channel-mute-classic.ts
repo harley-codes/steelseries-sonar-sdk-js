@@ -1,26 +1,24 @@
 import type { AudioChannel } from '@/enums'
 import { SonarRequestException } from '@/exceptions'
 import { convertChannelToApi } from '@/functions/converters/convert-channel-to-api'
-import { convertVolumeToApi } from '@/functions/converters/convert-volume-to-api'
 import { convertVolumeToUser } from '@/functions/converters/convert-volume-to-user'
 import { SonarChannel } from '@/sonar/models/audio-settings/enums/sonar-channel'
-import { changeVolumeLevelClassic } from '@/sonar/requests/volume-settings/change-volume-level-classic'
+import { changeVolumeMuteClassic } from '@/sonar/requests/volume-settings/change-volume-mute-classic'
 import type { ChannelVolumeClassic } from '@/types/channel-volume-classic'
 
 /**
  * Sets audio data for target channel.
  * @param sonarEndpoint Sonar endpoint URL
- * @param volumePercent Volume in the range of 0 to 100
+ * @param isMuted Will mute if true.
  * @param channel Target audio channel
  */
-export async function setChannelVolumeClassic(
+export async function setChannelMuteClassic(
 	sonarEndpoint: string,
-	volumePercent: number,
+	isMuted: boolean,
 	channel: AudioChannel
 ): Promise<ChannelVolumeClassic> {
 	const sonarChannel = convertChannelToApi(channel)
-	const formattedVolume = convertVolumeToApi(volumePercent)
-	const data = await changeVolumeLevelClassic(sonarEndpoint, formattedVolume, sonarChannel)
+	const data = await changeVolumeMuteClassic(sonarEndpoint, isMuted, sonarChannel)
 
 	const device = sonarChannel === SonarChannel.Master ? data.masters.classic : data.devices[sonarChannel]?.classic
 

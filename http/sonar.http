@@ -35,6 +35,12 @@ PUT {{SONAR_ADDRESS}}/volumeSettings/streamer/monitoring/master/volume/0.5
 ### -> SET -> Volume Level - Streamer - Streaming - Master - 50%
 PUT {{SONAR_ADDRESS}}/volumeSettings/streamer/streaming/master/volume/0.5
 
+### -> SET -> Mute - Master - true
+PUT {{SONAR_ADDRESS}}/volumeSettings/classic/master/mute/false
+
+### -> SET -> Mute - Streamer - Streaming - true
+PUT {{SONAR_ADDRESS}}/volumeSettings/streamer/streaming/master/isMuted/false
+
 
 ###########
 # CHATMIX #

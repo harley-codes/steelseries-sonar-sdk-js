@@ -15,7 +15,6 @@ describe('setAudioDevice', () => {
 	it('returns set audio devices for all output', async () => {
 		const sonarEndpoint = await getEndpointEndToEnd()
 		const result = await setAudioDevice(sonarEndpoint, DeviceChannel.Output, OUTPUT_DEVICE_ID)
-		console.warn(result)
 		expect(result.length).toBe(4)
 	})
 
