@@ -7,6 +7,9 @@ When Sonar is installed via the SteelSeries GG software - it exposes an API on l
 
 The SDK provides methods for getting the active Sonar endpoint, along with various wrapper functions to simplify the request/response payloads, along with QOL preferences.
 
+## Credit
+Building this SDK would not have been as simple without the work of [wex/sonar-rev](https://github.com/wex/sonar-rev). Their work on reverse engineering how Sonar works was paramount.
+
 ## Known Limitation
 Changes made with this SDK are not immediately visible in the SteelSeries GG software. Both the SDK and GG software communicate directly with the Sonar Service API, but the GG UI does not do any polling to auto-refresh when changes are made externally. To see the latest state in GG, you must close and reopen the GG window.
 
@@ -37,7 +40,8 @@ Get the audio data for Sonar when in classic mode.
 const audioData = await getAudioDataClassic(sonarEndpoint)
 const auxData = audioData[AudioChannel.Aux]
 // SET
-const auxData = await setAudioDataClassic(sonarEndpoint, 75, AudioChannel.Aux)
+const auxData = await setChannelVolumeClassic(sonarEndpoint, 75, AudioChannel.Aux)
+const auxData = await setChannelMuteClassic(sonarEndpoint, false, AudioChannel.Aux)
 ```
 
 #### **Audio Data - Streamer**
@@ -49,7 +53,12 @@ const auxMonitoringData = audioData
 	[AudioChannel.Aux]
 	[StreamerPath.Monitoring]
 // SET
-const auxData = await setAudioDataClassic(sonarEndpoint, 75,
+const auxData = await setChannelVolumeStreamer(
+	sonarEndpoint, 75,
+	AudioChannel.Aux,
+	StreamerPath.Monitoring)
+const auxData = await setChannelMuteStreamer(
+	sonarEndpoint, false,
 	AudioChannel.Aux,
 	StreamerPath.Monitoring)
 ```
@@ -87,4 +96,26 @@ const selectedAuxProfile = currentProfiles.find(x => x.Channel === ProfileChanne
 const favoriteAuxProfiles = getChannelProfiles(sonarEndpoint, ProfileChannel.Aux, true)
 // SET
 const selectedAuxProfile = setSelectedProfile(sonarEndpoint, favoriteAuxProfiles[0].id)
+```
+
+#### **Exception Handling**
+Exceptions are broken up into initialization and requests.
+
+`SonarInitializationException` provides a reason to easily determine if it failed to get the config, or if there is an issue with Sonar.
+```typescript
+catch(error){
+	if(error instanceof SonarInitializationException){
+		console.error({
+			error.message,
+			error.reason,
+			error.innerException
+		})
+	}
+	if(error instanceof SonarRequestException){
+		console.error({
+			error.message,
+			error.innerException
+		})
+	}
+}
 ```
