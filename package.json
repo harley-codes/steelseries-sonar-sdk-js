@@ -1,5 +1,6 @@
 {
 	"name": "steelseries-sonar-sdk",
+	"version": "0.1.1",
 	"description": "An SDK for interacting with the SteelSeries Sonar software.",
 	"author": "Harley Torrisi <mail@harleycodes.com>",
 	"license": "MIT",
