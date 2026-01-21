@@ -16,6 +16,15 @@ export enum AudioChannel {
 	Mic = 'mic'
 }
 
+// TODO: Sort this channel duplication nonsense out.
+export enum ProfileChannel {
+	Game = 'game',
+	Chat = 'chat',
+	Media = 'media',
+	Aux = 'aux',
+	Mic = 'mic'
+}
+
 /**
  * Sonar device channels.
  * @property {@link DeviceChannel.Output} - All output channels.

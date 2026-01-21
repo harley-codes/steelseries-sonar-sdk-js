@@ -1,5 +1,5 @@
 ### VS Code HTTP request to /chatMix
-@SONAR_ADDRESS=http://127.0.0.1:51143
+@SONAR_ADDRESS=http://127.0.0.1:52335
 
 ############
 # CHANNELS #
@@ -56,8 +56,11 @@ PUT {{SONAR_ADDRESS}}/chatMix?balance=0.3
 ### -> GET -> EQ Presets - Active
 GET {{SONAR_ADDRESS}}/configs/selected
 
-### -> GET -> EQ Presets - AUX
-GET {{SONAR_ADDRESS}}/configs?vad=aux
+### -> GET -> EQ Presets
+GET {{SONAR_ADDRESS}}/configs
+
+### -> GET -> EQ Presets - GAME
+GET {{SONAR_ADDRESS}}/configs?vad=game
 
 ### -> SET -> EQ Preset - AUX - Music: Bright
 PUT {{SONAR_ADDRESS}}/configs/c75b5225-041c-430a-abda-dd27bbbe9485/select
