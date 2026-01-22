@@ -1,3 +1,5 @@
+import https from 'node:https'
+import nodeFetch from 'node-fetch'
 import { InitializeErrorReason, SonarInitializationException } from '@/exceptions'
 
 type SubAppsResponse = {
@@ -30,11 +32,21 @@ export async function getSonarEndpoint(appEndpoint: string): Promise<string> {
 	let response: Response
 
 	try {
-		response = await fetch(`${appEndpoint}/subApps`, {
-			tls: {
-				rejectUnauthorized: false
-			}
-		})
+		const url = `${appEndpoint}/subApps`
+		// Add compatibility for Bun and Node.js
+		if (typeof Bun !== 'undefined') {
+			response = (await fetch(url, {
+				tls: {
+					rejectUnauthorized: false
+				}
+			})) as unknown as Response
+		} else {
+			response = (await nodeFetch(url, {
+				agent: new https.Agent({
+					rejectUnauthorized: false
+				})
+			})) as unknown as Response
+		}
 	} catch (error) {
 		throw new SonarInitializationException({
 			reason: InitializeErrorReason.NotResponding,

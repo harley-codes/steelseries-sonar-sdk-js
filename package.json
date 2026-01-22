@@ -1,6 +1,6 @@
 {
 	"name": "steelseries-sonar-sdk",
-	"version": "0.1.1",
+	"version": "0.5.0",
 	"description": "An SDK for interacting with the SteelSeries Sonar software.",
 	"author": "Harley Torrisi <mail@harleycodes.com>",
 	"license": "MIT",
@@ -9,11 +9,24 @@
 		"type": "git",
 		"url": "https://github.com/harley-codes/steelseries-sonar-sdk-js"
 	},
-	"module": "./src/index.ts",
+	"main": "dist/index.js",
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
+	"keywords": [
+		"sonar",
+		"gg",
+		"steel-series",
+		"audio"
+	],
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11",
 		"@types/bun": "latest",
-		"globals": "^17.0.0"
+		"bunup": "^0.16.20",
+		"globals": "^17.0.0",
+		"rimraf": "^6.1.2"
 	},
 	"peerDependencies": {
 		"typescript": "^5"
@@ -25,7 +38,9 @@
 		"test-e2e-endpoint": "bun test ./tests/e2e/**/*.test.ts -t getSonarEndpoint",
 		"test-unit": "bun test ./tests/unit/**/*.test.ts",
 		"test-all": "bun test-unit && bun test-e2e",
-		"package": "bun build ./src/index.ts --outdir=./dist --target node",
-		"package-minify": "bun build ./src/index.ts --outdir=./dist --minify --target node"
+		"package": "bunup --filter node"
+	},
+	"dependencies": {
+		"node-fetch": "^3.3.2"
 	}
 }
