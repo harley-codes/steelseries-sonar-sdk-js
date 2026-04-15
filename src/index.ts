@@ -3,7 +3,7 @@ export * from '@/exceptions'
 
 // Audio
 export * from '@/functions/audio/get-audio-data-classic'
-export * from '@/functions/audio/get-audio-data-stream'
+export * from '@/functions/audio/get-audio-data-streamer'
 export * from '@/functions/audio/get-audio-mode'
 export * from '@/functions/audio/set-audio-mode'
 export * from '@/functions/audio/set-channel-mute-classic'

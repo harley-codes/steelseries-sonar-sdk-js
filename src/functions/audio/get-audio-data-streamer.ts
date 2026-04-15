@@ -10,7 +10,7 @@ import type { ChannelVolumesStreamer } from '@/types/channel-volumes-streamer'
  * @param sonarEndpoint Sonar endpoint URL
  * @returns volume in the range of 0 to 100,
  */
-export async function getAudioDataStream(sonarEndpoint: string): Promise<ChannelVolumesStreamer> {
+export async function getAudioDataStreamer(sonarEndpoint: string): Promise<ChannelVolumesStreamer> {
 	const data = await requestVolumeSettingsStreamer(sonarEndpoint)
 	const volumeData: ChannelVolumesStreamer = {
 		[AudioChannel.Master]: createResponseVolumeData(data.masters.stream),

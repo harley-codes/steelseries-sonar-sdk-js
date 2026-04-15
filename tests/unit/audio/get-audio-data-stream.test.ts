@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 import { SonarRequestException } from '@/exceptions'
-import { getAudioDataStream } from '@/functions/audio/get-audio-data-stream'
+import { getAudioDataStreamer } from '@/functions/audio/get-audio-data-streamer'
 
 let originalFetch: typeof fetch
 
-const request = () => getAudioDataStream('https://localhost')
+const request = () => getAudioDataStreamer('https://localhost')
 
 describe('getAudioDataStream', () => {
 	beforeEach(() => {
